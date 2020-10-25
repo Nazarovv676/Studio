@@ -12,7 +12,7 @@
 QSettings Settings::settings("conf", QSettings::IniFormat);
 QPalette Settings::greyPalette;//цвет этой палитры задается вручную методом в конструкторе LoginWindow
 QPalette Settings::whitePalette;
-QPalette Settings::blackPalette("black");
+QPalette Settings::blackPalette("black");//эту палитру создает qt
 //__________________________________________________________
 
 QFile Log::file("log.txt");

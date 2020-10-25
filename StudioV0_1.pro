@@ -46,5 +46,5 @@ RESOURCES += \
     Resources.qrc
 
 DISTFILES += \
-    umltest.jpeg \
-    umltest.qmodel
+    umldiagram.qmodel \
+    umltest.jpeg
