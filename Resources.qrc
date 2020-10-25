@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/file.png</file>
+        <file>image/add-friend.png</file>
+        <file>image/add-user.png</file>
+        <file>image/clothes.png</file>
+        <file>image/needle.png</file>
+        <file>image/shirt.png</file>
+        <file>image/technical-support.png</file>
+        <file>image/icons8-settings-24.png</file>
+        <file>image/search.png</file>
+    </qresource>
+</RCC>
