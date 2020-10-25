@@ -407,10 +407,15 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
 
 void MainWindow::on_lineEdit_searchId_textChanged(const QString &arg1)
 {
+    updateSearchTable();
+}
+
+void MainWindow::updateSearchTable()
+{
     for(int i(0); i < tableModel->rowCount(); i++)
         ui->tableView_search->showRow(i);
 
     for(int i(0); i < ui->tableView_search->model()->rowCount(); i++)
-        if(!ui->tableView_search->model()->data(ui->tableView_search->model()->index(i, 0)).toString().contains(arg1))
+        if(!ui->tableView_search->model()->data(ui->tableView_search->model()->index(i, 0)).toString().contains(ui->lineEdit_searchId->text()))
             ui->tableView_search->hideRow(i);
 }

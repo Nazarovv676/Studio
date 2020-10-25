@@ -30,6 +30,8 @@ private slots:
     //__________________________custom events or overrides_____________________
     void updateUI();
 
+    void updateSearchTable();
+
     void closeEvent(QCloseEvent *event) override;
 
     //__________________________genereted events(slots)____________________________
