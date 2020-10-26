@@ -3,12 +3,8 @@
 
 #include <QDebug>
 #include <QMessageBox>
-#include <QSqlQuery>
-
-
 
 #define MESSAGETIMEOUT 3000
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
