@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     tableModel = new QSqlTableModel(this, DBConnection::database);//задаем базу и выделяем память для модели(для выгрузки информации в таблицу)
 
-    //_______________________ставим валидаторы на ввод________________________________________________________________________
+    //_______________________ставим валидаторы в виде решулярных выражений на ввод________________________________________________________________________
 
     rxEmail = new QRegularExpression("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", QRegularExpression::CaseInsensitiveOption);
     rxString45_ru = new QRegularExpression("[А-я -]{45}", QRegularExpression::CaseInsensitiveOption);
