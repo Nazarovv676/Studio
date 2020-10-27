@@ -31,14 +31,9 @@ void ItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, cons
 
     int pos = 0;
     QString data = line->text();
-    if(validator.validate(data,pos) != QValidator::Acceptable)
-    {
-        //line->setText(line->text().remove(1, line->text().length() - 1));
-    }
-    else
-    {
+    if(validator.validate(data,pos) == QValidator::Acceptable)
         model->setData(index, data);
-    }
+
 }
 
 

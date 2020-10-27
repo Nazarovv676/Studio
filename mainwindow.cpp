@@ -647,7 +647,7 @@ void MainWindow::hideNonValidRowsSearchTable(int column, QString compareText)
         }
         else
         {
-            if(!tableModel->data(tableModel->index(i, column)).toString().contains(compareText))
+            if(!tableModel->data(tableModel->index(i, column)).toString().contains(compareText, Qt::CaseInsensitive))
             ui->tableView_search->hideRow(i);
         }
 }
@@ -681,32 +681,27 @@ void MainWindow::updateSearchTable()
 
 }
 
-void MainWindow::on_lineEdit_search1_textChanged(const QString &arg1)
+void MainWindow::on_lineEdit_search1_textChanged(const QString &/*arg1*/)
 {
-    qDebug() << arg1;
     updateSearchTable();
 }
 
-void MainWindow::on_lineEdit_search2_textChanged(const QString &arg1)
+void MainWindow::on_lineEdit_search2_textChanged(const QString &/*arg1*/)
 {
-    qDebug() << arg1;
     updateSearchTable();
 }
 
-void MainWindow::on_lineEdit_search3_textChanged(const QString &arg1)
+void MainWindow::on_lineEdit_search3_textChanged(const QString &/*arg1*/)
 {
-    qDebug() << arg1;
     updateSearchTable();
 }
 
-void MainWindow::on_lineEdit_search4_textChanged(const QString &arg1)
+void MainWindow::on_lineEdit_search4_textChanged(const QString &/*arg1*/)
 {
-    qDebug() << arg1;
     updateSearchTable();
 }
 
-void MainWindow::on_lineEdit_search5_textChanged(const QString &arg1)
+void MainWindow::on_lineEdit_search5_textChanged(const QString &/*arg1*/)
 {
-    qDebug() << arg1;
     updateSearchTable();
 }
