@@ -587,14 +587,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
 
 void MainWindow::hideNonValidRowsSearchTable(int column, QString compareText)
 {
-    qDebug() << "_________________________";
     for(int i(0); i < tableModel->rowCount(); i++)
-    {
-
-        qDebug() << "Table data " << i << ", " << column << ": " << tableModel->data(tableModel->index(i, column)).toDouble();
-        qDebug() << "CompareText data " << i << ", " << column << ": " << compareText.toDouble();
-
-
         if(compareText.contains("<"))
         {
             QString compareTextToNum = compareText;
@@ -614,8 +607,6 @@ void MainWindow::hideNonValidRowsSearchTable(int column, QString compareText)
             if(!tableModel->data(tableModel->index(i, column)).toString().contains(compareText))
             ui->tableView_search->hideRow(i);
         }
-    }
-    qDebug() << "_________________________";
 }
 
 void MainWindow::updateSearchTable()
@@ -649,25 +640,30 @@ void MainWindow::updateSearchTable()
 
 void MainWindow::on_lineEdit_search1_textChanged(const QString &arg1)
 {
+    qDebug() << arg1;
     updateSearchTable();
 }
 
 void MainWindow::on_lineEdit_search2_textChanged(const QString &arg1)
 {
+    qDebug() << arg1;
     updateSearchTable();
 }
 
 void MainWindow::on_lineEdit_search3_textChanged(const QString &arg1)
 {
+    qDebug() << arg1;
     updateSearchTable();
 }
 
 void MainWindow::on_lineEdit_search4_textChanged(const QString &arg1)
 {
+    qDebug() << arg1;
     updateSearchTable();
 }
 
 void MainWindow::on_lineEdit_search5_textChanged(const QString &arg1)
 {
+    qDebug() << arg1;
     updateSearchTable();
 }

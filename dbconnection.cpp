@@ -202,8 +202,6 @@ void DBConnection::addHardware(const QString &name, const QString &price, const 
 void DBConnection::addOrder(const QString &custID, const QString &masterID, const QString &ToCName, const QStringList &materialName, const QStringList &materialQuant, const QStringList &hardName, const QStringList &hardQuant)
 {
     QString orderID = QString::number(orderCount() + 1);
-    qDebug() <<orderID;
-    qDebug() << hardName << hardQuant;
 
     if(!query.exec("INSERT INTO `studio`.`order` (`id`, `date`, `master_id`, `customer_id`, `typeofcloth_name`) VALUES ('" + orderID + "', '" + QDate::currentDate().toString("yyyy-MM-dd") + "', '" + masterID + "', '" + custID + "', '" + ToCName + "')"))
         throw std::runtime_error(query.lastError().text().toStdString());
