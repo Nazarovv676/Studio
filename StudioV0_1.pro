@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     dbconnection.cpp \
+    itemdelegate.cpp \
     log.cpp \
     main.cpp \
     loginwindow.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
 
 HEADERS += \
     dbconnection.h \
+    itemdelegate.h \
     log.h \
     loginwindow.h \
     mainwindow.h \
@@ -46,5 +48,6 @@ RESOURCES += \
     Resources.qrc
 
 DISTFILES += \
+    studioDB.sql \
     umldiagram.qmodel \
     umltest.jpeg

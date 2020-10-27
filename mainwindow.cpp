@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "itemdelegate.h"
 
 #include <QDebug>
 #include <QMessageBox>
@@ -37,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //_______________________ставим валидаторы в виде регулярных выражений на ввод________________________________________________________________________
 
     rxEmail = new QRegularExpression("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", QRegularExpression::CaseInsensitiveOption);
-    rxString45_ru = new QRegularExpression("[А-я -]{45}", QRegularExpression::CaseInsensitiveOption);
-    rxStringNum45_eng_ru = new QRegularExpression("[А-яA-z0-9 -]{45}", QRegularExpression::CaseInsensitiveOption);
+    rxString45_ru = new QRegularExpression("[А-я -]{1,45}", QRegularExpression::CaseInsensitiveOption);
+    rxStringNum45_eng_ru = new QRegularExpression("[А-яA-z0-9 -]{1,45}", QRegularExpression::CaseInsensitiveOption);
     rxNumTel = new QRegularExpression("\\+\\d{3}\\-\\d{2}\\-\\d{3}\\-\\d{2}\\-\\d{2}");
 
     ui->lineEdit_email->setValidator(new QRegularExpressionValidator(*rxEmail, this));
@@ -386,6 +387,9 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search3->setText("ID мастера:");
             ui->label_search4->setText("ID клиента:");
             ui->label_search5->setText("Тип одежды:");
+
+            ItemDelegate *itDgToC = new ItemDelegate(rxStringNum45_eng_ru);
+            ui->tableView_search->setItemDelegateForColumn(4, itDgToC);
         }
         else if(tableName == "Клиент")
         {
@@ -416,6 +420,15 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search3->setText("Фамилия:");
             ui->label_search4->setText("Номер телефона:");
             ui->label_search5->setText("Электронная почта:");
+
+            ItemDelegate *itDgName = new ItemDelegate(rxString45_ru);
+            ItemDelegate *itDgNumTel = new ItemDelegate(rxNumTel);
+            ItemDelegate *itDgEmail = new ItemDelegate(rxEmail);
+
+            ui->tableView_search->setItemDelegateForColumn(1, itDgName);
+            ui->tableView_search->setItemDelegateForColumn(2, itDgName);
+            ui->tableView_search->setItemDelegateForColumn(3, itDgNumTel);
+            ui->tableView_search->setItemDelegateForColumn(4, itDgEmail);
         }
         else if(tableName == "Мастер")
         {
@@ -446,6 +459,15 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search3->setText("Фамилия:");
             ui->label_search4->setText("Адрес:");
             ui->label_search5->setText("Номер телефона:");
+
+            ItemDelegate *itDgName = new ItemDelegate(rxString45_ru);
+            ItemDelegate *itDgNumTel = new ItemDelegate(rxNumTel);
+            ItemDelegate *itDgAddress = new ItemDelegate(rxStringNum45_eng_ru);
+
+            ui->tableView_search->setItemDelegateForColumn(1, itDgName);
+            ui->tableView_search->setItemDelegateForColumn(2, itDgName);
+            ui->tableView_search->setItemDelegateForColumn(3, itDgAddress);
+            ui->tableView_search->setItemDelegateForColumn(4, itDgNumTel);
         }
         else if(tableName == "Тип одежды")
         {
@@ -472,6 +494,10 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search1->setText("Наименование:");
             ui->label_search2->setText("Рабочих дней на изготовление:");
             ui->label_search3->setText("Цена:");
+
+            ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
+
+            ui->tableView_search->setItemDelegateForColumn(0, itDgName);
         }
         else if(tableName == "Фурнитура")
         {
@@ -498,6 +524,10 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search1->setText("Наименование:");
             ui->label_search2->setText("Цена:");
             ui->label_search3->setText("Количество в наличии:");
+
+            ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
+
+            ui->tableView_search->setItemDelegateForColumn(0, itDgName);
         }
         else if(tableName == "Материал")
         {
@@ -524,6 +554,10 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search1->setText("Наименование:");
             ui->label_search2->setText("Цена:");
             ui->label_search3->setText("Количество в наличии:");
+
+            ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
+
+            ui->tableView_search->setItemDelegateForColumn(0, itDgName);
         }
         else if(tableName == "Списки материалов в заказах")
         {
@@ -550,6 +584,10 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search1->setText("Количество:");
             ui->label_search2->setText("Наименование материала:");
             ui->label_search3->setText("ID заказа:");
+
+            ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
+
+            ui->tableView_search->setItemDelegateForColumn(1, itDgName);
         }
         else if(tableName == "Списки фурнитуры в заказах")
         {
@@ -576,6 +614,10 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search1->setText("Количество:");
             ui->label_search2->setText("Наименование фурнитуры:");
             ui->label_search3->setText("ID заказа:");
+
+            ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
+
+            ui->tableView_search->setItemDelegateForColumn(1, itDgName);
         }
 
         tableModel->select();//взятие данных из таблиц
