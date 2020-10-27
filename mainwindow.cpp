@@ -15,6 +15,17 @@ MainWindow::MainWindow(QWidget *parent) :
     //__________________________________________________________________________________________________
     updateUI();//применяем настройки из файла к интерфейсу
 
+    ui->label_search1->setText("Выберите имя таблицы еще раз для обновления информации");
+    ui->label_search2->hide();
+    ui->label_search3->hide();
+    ui->label_search4->hide();
+    ui->label_search5->hide();
+
+    ui->lineEdit_search1->hide();
+    ui->lineEdit_search2->hide();
+    ui->lineEdit_search3->hide();
+    ui->lineEdit_search4->hide();
+    ui->lineEdit_search5->hide();
     //__________________________________________________________________________________________________
     for(int i(0); i < ui->tabWidget->count(); i++)//имитируем переход по всем вкладкам для обновления id при входе в программу
         on_tabWidget_currentChanged(i);
@@ -22,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     tableModel = new QSqlTableModel(this, DBConnection::database);//задаем базу и выделяем память для модели(для выгрузки информации в таблицу)
 
-    //_______________________ставим валидаторы на ввод________________________________________________________________________
+    //_______________________ставим валидаторы в виде регулярных выражений на ввод________________________________________________________________________
 
     rxEmail = new QRegularExpression("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", QRegularExpression::CaseInsensitiveOption);
     rxString45_ru = new QRegularExpression("[А-я -]{45}", QRegularExpression::CaseInsensitiveOption);
@@ -104,6 +115,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)//обновление id
             ui->lineEdit_id->setText(QString::number(DBConnection::customersCount() + 1));
         else if(ui->tabWidget->tabText(index) == "Регистрация мастера")
             ui->lineEdit_addMasterID->setText(QString::number(DBConnection::masterCount() + 1));
+        //        else if(ui->tabWidget->tabText(index) == "Поиск")
+        //            on_comboBox_searchTableName_activated(ui->comboBox_searchTableName->currentText());
         else if(ui->tabWidget->tabText(index) == "Оформление заказа")
         {
             ui->lineEdit_addOrderIdOrder->setText(QString::number(DBConnection::orderCount() + 1));
@@ -351,7 +364,27 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(2, Qt::Horizontal, "ID мастера", Qt::DisplayRole);
             tableModel->setHeaderData(3, Qt::Horizontal, "ID клиента", Qt::DisplayRole);
             tableModel->setHeaderData(4, Qt::Horizontal, "Тип одежды", Qt::DisplayRole);
-            //tableModel.
+
+            //показываем все надписи
+            ui->label_search1->show();
+            ui->label_search2->show();
+            ui->label_search3->show();
+            ui->label_search4->show();
+            ui->label_search5->show();
+
+            //показываем все строки для ввода
+            ui->lineEdit_search1->show();
+            ui->lineEdit_search2->show();
+            ui->lineEdit_search3->show();
+            ui->lineEdit_search4->show();
+            ui->lineEdit_search5->show();
+
+            //установка надписей на фильтровых поисках
+            ui->label_search1->setText("ID:");
+            ui->label_search2->setText("Дата:");
+            ui->label_search3->setText("ID мастера:");
+            ui->label_search4->setText("ID клиента:");
+            ui->label_search5->setText("Тип одежды:");
         }
         else if(tableName == "Клиент")
         {
@@ -361,6 +394,27 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(2, Qt::Horizontal, "Фамилия", Qt::DisplayRole);
             tableModel->setHeaderData(3, Qt::Horizontal, "Номер телефона", Qt::DisplayRole);
             tableModel->setHeaderData(4, Qt::Horizontal, "Электронная почта", Qt::DisplayRole);
+
+            //показываем все надписи
+            ui->label_search1->show();
+            ui->label_search2->show();
+            ui->label_search3->show();
+            ui->label_search4->show();
+            ui->label_search5->show();
+
+            //показываем все строки для ввода
+            ui->lineEdit_search1->show();
+            ui->lineEdit_search2->show();
+            ui->lineEdit_search3->show();
+            ui->lineEdit_search4->show();
+            ui->lineEdit_search5->show();
+
+            //установка надписей на фильтровых поисках
+            ui->label_search1->setText("ID:");
+            ui->label_search2->setText("Имя:");
+            ui->label_search3->setText("Фамилия:");
+            ui->label_search4->setText("Номер телефона:");
+            ui->label_search5->setText("Электронная почта:");
         }
         else if(tableName == "Мастер")
         {
@@ -370,6 +424,27 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(2, Qt::Horizontal, "Фамилия", Qt::DisplayRole);
             tableModel->setHeaderData(3, Qt::Horizontal, "Адрес", Qt::DisplayRole);
             tableModel->setHeaderData(4, Qt::Horizontal, "Номер телефона", Qt::DisplayRole);
+
+            //показываем все надписи
+            ui->label_search1->show();
+            ui->label_search2->show();
+            ui->label_search3->show();
+            ui->label_search4->show();
+            ui->label_search5->show();
+
+            //показываем все строки для ввода
+            ui->lineEdit_search1->show();
+            ui->lineEdit_search2->show();
+            ui->lineEdit_search3->show();
+            ui->lineEdit_search4->show();
+            ui->lineEdit_search5->show();
+
+            //установка надписей на фильтровых поисках
+            ui->label_search1->setText("ID:");
+            ui->label_search2->setText("Имя:");
+            ui->label_search3->setText("Фамилия:");
+            ui->label_search4->setText("Адрес:");
+            ui->label_search5->setText("Номер телефона:");
         }
         else if(tableName == "Тип одежды")
         {
@@ -377,6 +452,25 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(0, Qt::Horizontal, "Наименование", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Рабочих дней на изготовление", Qt::DisplayRole);
             tableModel->setHeaderData(2, Qt::Horizontal, "Цена", Qt::DisplayRole);
+
+            //показываем нужные надписи
+            ui->label_search1->show();
+            ui->label_search2->show();
+            ui->label_search3->show();
+            ui->label_search4->hide();
+            ui->label_search5->hide();
+
+            //показываем нужные строки для ввода
+            ui->lineEdit_search1->show();
+            ui->lineEdit_search2->show();
+            ui->lineEdit_search3->show();
+            ui->lineEdit_search4->hide();
+            ui->lineEdit_search5->hide();
+
+            //установка надписей на фильтровых поисках
+            ui->label_search1->setText("Наименование:");
+            ui->label_search2->setText("Рабочих дней на изготовление:");
+            ui->label_search3->setText("Цена:");
         }
         else if(tableName == "Фурнитура")
         {
@@ -384,6 +478,25 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(0, Qt::Horizontal, "Наименование", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Цена", Qt::DisplayRole);
             tableModel->setHeaderData(2, Qt::Horizontal, "Количество в наличии", Qt::DisplayRole);
+
+            //показываем нужные надписи
+            ui->label_search1->show();
+            ui->label_search2->show();
+            ui->label_search3->show();
+            ui->label_search4->hide();
+            ui->label_search5->hide();
+
+            //показываем нужные строки для ввода
+            ui->lineEdit_search1->show();
+            ui->lineEdit_search2->show();
+            ui->lineEdit_search3->show();
+            ui->lineEdit_search4->hide();
+            ui->lineEdit_search5->hide();
+
+            //установка надписей на фильтровых поисках
+            ui->label_search1->setText("Наименование:");
+            ui->label_search2->setText("Цена:");
+            ui->label_search3->setText("Количество в наличии:");
         }
         else if(tableName == "Материал")
         {
@@ -391,9 +504,80 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(0, Qt::Horizontal, "Наименование", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Цена", Qt::DisplayRole);
             tableModel->setHeaderData(2, Qt::Horizontal, "Количество в наличии", Qt::DisplayRole);
+
+            //показываем нужные надписи
+            ui->label_search1->show();
+            ui->label_search2->show();
+            ui->label_search3->show();
+            ui->label_search4->hide();
+            ui->label_search5->hide();
+
+            //показываем нужные строки для ввода
+            ui->lineEdit_search1->show();
+            ui->lineEdit_search2->show();
+            ui->lineEdit_search3->show();
+            ui->lineEdit_search4->hide();
+            ui->lineEdit_search5->hide();
+
+            //установка надписей на фильтровых поисках
+            ui->label_search1->setText("Наименование:");
+            ui->label_search2->setText("Цена:");
+            ui->label_search3->setText("Количество в наличии:");
+        }
+        else if(tableName == "Списки материалов в заказах")
+        {
+            tableModel->setTable("material_order");
+            tableModel->setHeaderData(0, Qt::Horizontal, "Количество", Qt::DisplayRole);
+            tableModel->setHeaderData(1, Qt::Horizontal, "Наименование материала", Qt::DisplayRole);
+            tableModel->setHeaderData(2, Qt::Horizontal, "ID заказа", Qt::DisplayRole);
+
+            //показываем нужные надписи
+            ui->label_search1->show();
+            ui->label_search2->show();
+            ui->label_search3->show();
+            ui->label_search4->hide();
+            ui->label_search5->hide();
+
+            //показываем нужные строки для ввода
+            ui->lineEdit_search1->show();
+            ui->lineEdit_search2->show();
+            ui->lineEdit_search3->show();
+            ui->lineEdit_search4->hide();
+            ui->lineEdit_search5->hide();
+
+            //установка надписей на фильтровых поисках
+            ui->label_search1->setText("Количество:");
+            ui->label_search2->setText("Наименование материала:");
+            ui->label_search3->setText("ID заказа:");
+        }
+        else if(tableName == "Списки фурнитуры в заказах")
+        {
+            tableModel->setTable("hardware_order");
+            tableModel->setHeaderData(0, Qt::Horizontal, "Количество", Qt::DisplayRole);
+            tableModel->setHeaderData(1, Qt::Horizontal, "Наименование Фурнитуры", Qt::DisplayRole);
+            tableModel->setHeaderData(2, Qt::Horizontal, "ID заказа", Qt::DisplayRole);
+
+            //показываем нужные надписи
+            ui->label_search1->show();
+            ui->label_search2->show();
+            ui->label_search3->show();
+            ui->label_search4->hide();
+            ui->label_search5->hide();
+
+            //показываем нужные строки для ввода
+            ui->lineEdit_search1->show();
+            ui->lineEdit_search2->show();
+            ui->lineEdit_search3->show();
+            ui->lineEdit_search4->hide();
+            ui->lineEdit_search5->hide();
+
+            //установка надписей на фильтровых поисках
+            ui->label_search1->setText("Количество:");
+            ui->label_search2->setText("Наименование фурнитуры:");
+            ui->label_search3->setText("ID заказа:");
         }
 
-        tableModel->select();//взяите данных из таблиц
+        tableModel->select();//взятие данных из таблиц
         ui->tableView_search->setModel(tableModel);
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -401,17 +585,89 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
     }
 }
 
-void MainWindow::on_lineEdit_searchId_textChanged(const QString &arg1)
+void MainWindow::hideNonValidRowsSearchTable(int column, QString compareText)
 {
-    updateSearchTable();
+    qDebug() << "_________________________";
+    for(int i(0); i < tableModel->rowCount(); i++)
+    {
+
+        qDebug() << "Table data " << i << ", " << column << ": " << tableModel->data(tableModel->index(i, column)).toDouble();
+        qDebug() << "CompareText data " << i << ", " << column << ": " << compareText.toDouble();
+
+
+        if(compareText.contains("<"))
+        {
+            QString compareTextToNum = compareText;
+            compareTextToNum.remove("<");
+            if (tableModel->data(tableModel->index(i, column)).toDouble() > compareTextToNum.toDouble())
+                ui->tableView_search->hideRow(i);
+        }
+        else if(compareText.contains(">"))
+        {
+            QString compareTextToNum = compareText;
+            compareTextToNum.remove(">");
+            if (tableModel->data(tableModel->index(i, column)).toDouble() < compareTextToNum.toDouble())
+                ui->tableView_search->hideRow(i);
+        }
+        else
+        {
+            if(!tableModel->data(tableModel->index(i, column)).toString().contains(compareText))
+            ui->tableView_search->hideRow(i);
+        }
+    }
+    qDebug() << "_________________________";
 }
 
 void MainWindow::updateSearchTable()
 {
-    for(int i(0); i < tableModel->rowCount(); i++)
-        ui->tableView_search->showRow(i);
+    try {
+        for(int i(0); i < tableModel->rowCount(); i++)
+            ui->tableView_search->showRow(i);
 
-    for(int i(0); i < ui->tableView_search->model()->rowCount(); i++)
-        if(!ui->tableView_search->model()->data(ui->tableView_search->model()->index(i, 0)).toString().contains(ui->lineEdit_searchId->text()))
-            ui->tableView_search->hideRow(i);
+
+        if(!ui->lineEdit_search1->isHidden())
+            hideNonValidRowsSearchTable(0, ui->lineEdit_search1->text());
+
+        if(!ui->lineEdit_search2->isHidden())
+            hideNonValidRowsSearchTable(1, ui->lineEdit_search2->text());
+
+        if(!ui->lineEdit_search3->isHidden())
+            hideNonValidRowsSearchTable(2, ui->lineEdit_search3->text());
+
+        if(!ui->lineEdit_search4->isHidden())
+            hideNonValidRowsSearchTable(3, ui->lineEdit_search4->text());
+
+        if(!ui->lineEdit_search5->isHidden())
+            hideNonValidRowsSearchTable(4, ui->lineEdit_search5->text());
+
+    } catch (const std::exception& e) {
+        Log::write(e.what());
+        QMessageBox::warning(this, "Ошибка", e.what());
+    }
+
+}
+
+void MainWindow::on_lineEdit_search1_textChanged(const QString &arg1)
+{
+    updateSearchTable();
+}
+
+void MainWindow::on_lineEdit_search2_textChanged(const QString &arg1)
+{
+    updateSearchTable();
+}
+
+void MainWindow::on_lineEdit_search3_textChanged(const QString &arg1)
+{
+    updateSearchTable();
+}
+
+void MainWindow::on_lineEdit_search4_textChanged(const QString &arg1)
+{
+    updateSearchTable();
+}
+
+void MainWindow::on_lineEdit_search5_textChanged(const QString &arg1)
+{
+    updateSearchTable();
 }

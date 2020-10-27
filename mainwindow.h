@@ -71,11 +71,21 @@ private slots:
 
     void on_comboBox_searchTableName_activated(const QString &arg1);
 
-    void on_lineEdit_searchId_textChanged(const QString &arg1);
+    void on_lineEdit_search1_textChanged(const QString &arg1);
+
+    void on_lineEdit_search2_textChanged(const QString &arg1);
+
+    void on_lineEdit_search3_textChanged(const QString &arg1);
+
+    void on_lineEdit_search4_textChanged(const QString &arg1);
+
+    void on_lineEdit_search5_textChanged(const QString &arg1);
 
 private:
-    Ui::MainWindow *ui;
+    void hideNonValidRowsSearchTable(int column, QString compareText);
 
+    //______________________________________________
+    Ui::MainWindow *ui;
     SettingsWindow *settingsWindow;///Окно для настроек
 
     //_______________________________________Varibles__________________________________
