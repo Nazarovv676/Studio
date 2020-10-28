@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="Resources.qrc">
-    <normaloff>:/img/image/technical-support.png</normaloff>:/img/image/technical-support.png</iconset>
+    <normaloff>:/image/technical-support.png</normaloff>:/image/technical-support.png</iconset>
   </property>
   <property name="toolTipDuration">
    <number>-4</number>
