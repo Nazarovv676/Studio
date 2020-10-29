@@ -73,6 +73,7 @@ void MainWindow::closeEvent(QCloseEvent *event)//перегрузка событ
     else
     {
         Log::write("Program is close");//запись в логи о закритии програмы
+        DBConnection::database.close();
         event->accept();
     }
 }
@@ -704,4 +705,10 @@ void MainWindow::on_lineEdit_search4_textChanged(const QString &/*arg1*/)
 void MainWindow::on_lineEdit_search5_textChanged(const QString &/*arg1*/)
 {
     updateSearchTable();
+}
+
+void MainWindow::on_action_addUser_triggered()
+{
+    signupWindow = new signUpWindow(this);
+    signupWindow->show();
 }

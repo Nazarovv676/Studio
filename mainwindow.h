@@ -6,6 +6,7 @@
 #include "settings.h"
 
 #include "settingswindow.h"
+#include "signupwindow.h"
 
 #include <QMainWindow>
 #include <QCloseEvent>
@@ -81,12 +82,15 @@ private slots:
 
     void on_lineEdit_search5_textChanged(const QString &arg1);
 
+    void on_action_addUser_triggered();
+
 private:
     void hideNonValidRowsSearchTable(int column, QString compareText);
 
     //______________________________________________
     Ui::MainWindow *ui;
     SettingsWindow *settingsWindow;///Окно для настроек
+    signUpWindow *signupWindow;
 
     //_______________________________________Varibles__________________________________
     QStringList materialNameList, materialQuantList, hardNameList, hardQuantList;//Списки названий и цен для заказа

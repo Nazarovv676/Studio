@@ -23,7 +23,8 @@ SOURCES += \
     loginwindow.cpp \
     mainwindow.cpp \
     settings.cpp \
-    settingswindow.cpp
+    settingswindow.cpp \
+    signupwindow.cpp
 
 HEADERS += \
     dbconnection.h \
@@ -32,12 +33,14 @@ HEADERS += \
     loginwindow.h \
     mainwindow.h \
     settings.h \
-    settingswindow.h
+    settingswindow.h \
+    signupwindow.h
 
 FORMS += \
     loginwindow.ui \
     mainwindow.ui \
-    settingswindow.ui
+    settingswindow.ui \
+    signupwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

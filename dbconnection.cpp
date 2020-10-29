@@ -13,7 +13,10 @@ void DBConnection::connect()
     database.setPassword(userPass);
     database.setPort(port.toInt());
     if(!database.open())
+    {
+        qDebug() << database.lastError().nativeErrorCode() << database.lastError();
         throw std::runtime_error(database.lastError().nativeErrorCode().toStdString());
+    }
 }
 
 int DBConnection::customersCount()
@@ -39,6 +42,14 @@ int DBConnection::orderCount()
         throw std::runtime_error(query.lastError().text().toStdString());
     query.next();
     return query.value(0).toInt();
+}
+
+void DBConnection::addUser(const QString &name, const QString &pass)
+{
+    if (!query.exec("CREATE USER '" + name + "'@'" + host + "' IDENTIFIED WITH mysql_native_password BY '" + pass + "';"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    if (!query.exec("GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `" + Settings::settings.value("CONNECTION/DBNAME").toString() + "`.* TO '" + name + "'@'" + host + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
 }
 
 QSqlQuery DBConnection::ToCList()

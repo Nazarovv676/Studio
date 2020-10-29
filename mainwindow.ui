@@ -1978,6 +1978,8 @@
      <string>Инструменты</string>
     </property>
     <addaction name="action_settings"/>
+    <addaction name="separator"/>
+    <addaction name="action_addUser"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -2072,6 +2074,15 @@
    </property>
    <property name="text">
     <string>Оформить заказ</string>
+   </property>
+  </action>
+  <action name="action_addUser">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/image/add-user.png</normaloff>:/image/add-user.png</iconset>
+   </property>
+   <property name="text">
+    <string>Добавить пользователя</string>
    </property>
   </action>
  </widget>

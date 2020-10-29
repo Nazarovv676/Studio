@@ -133,7 +133,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Должность:</string>
+             <string>Имя:</string>
             </property>
            </widget>
           </item>

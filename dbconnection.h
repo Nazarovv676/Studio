@@ -28,6 +28,8 @@ public:
     static int masterCount();
     static int orderCount();
 
+    static void addUser(const QString &name, const QString &pass);
+
     static QSqlQuery ToCList();
     static QSqlQuery materialList();
     static QSqlQuery hardwareList();
