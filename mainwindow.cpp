@@ -28,6 +28,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_search3->hide();
     ui->lineEdit_search4->hide();
     ui->lineEdit_search5->hide();
+
+    //убираем доступ к регистрации пользователя если не root
+    if(DBConnection::userName != "root")
+    {
+        ui->action_addUser->setEnabled(false);
+        ui->action_addUser->setToolTip("Для доступа к привилегиям зайдите с помощью имени 'root'");
+    }
     //__________________________________________________________________________________________________
     for(int i(0); i < ui->tabWidget->count(); i++)//имитируем переход по всем вкладкам для обновления id при входе в программу
         on_tabWidget_currentChanged(i);
