@@ -84,6 +84,8 @@ private slots:
 
     void on_action_addUser_triggered();
 
+    void on_pushButton_searchDelete_clicked();
+
 private:
     void hideNonValidRowsSearchTable(int column, QString compareText);
 

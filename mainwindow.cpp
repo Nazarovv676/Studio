@@ -719,3 +719,16 @@ void MainWindow::on_action_addUser_triggered()
     signupWindow = new signUpWindow(this);
     signupWindow->show();
 }
+
+void MainWindow::on_pushButton_searchDelete_clicked()
+{
+    try {
+        qDebug() << ui->tableView_search->currentIndex();
+        QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Выход", "Вы уверены, что хотите удалить ?", QMessageBox::No | QMessageBox::Yes);
+        if (resBtn == QMessageBox::Yes)
+            ui->tableView_search->model()->removeRow(ui->tableView_search->currentIndex().row());
+    } catch (const std::exception& e) {
+        Log::write(e.what());
+        QMessageBox::warning(this, "Ошибка", e.what());
+    }
+}
