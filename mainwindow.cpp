@@ -656,7 +656,7 @@ void MainWindow::hideNonValidRowsSearchTable(int column, QString compareText)
         else
         {
             if(!tableModel->data(tableModel->index(i, column)).toString().contains(compareText, Qt::CaseInsensitive))
-            ui->tableView_search->hideRow(i);
+                ui->tableView_search->hideRow(i);
         }
 }
 

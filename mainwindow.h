@@ -93,12 +93,8 @@ private:
     Ui::MainWindow *ui;
     SettingsWindow *settingsWindow;///Окно для настроек
     signUpWindow *signupWindow;
-
-    //_______________________________________Varibles__________________________________
     QStringList materialNameList, materialQuantList, hardNameList, hardQuantList;//Списки названий и цен для заказа
-
     QSqlTableModel *tableModel;
-
     QRegularExpression *rxEmail;
     QRegularExpression *rxString45_ru;
     QRegularExpression *rxStringNum45_eng_ru;
