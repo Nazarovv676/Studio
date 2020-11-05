@@ -33,6 +33,7 @@ public:
     static QSqlQuery ToCList();
     static QSqlQuery materialList();
     static QSqlQuery hardwareList();
+    static QSqlQuery masterList();
 
     static QString getMasterIdByNumTel(const QString &numTel);
     static QString getCustIdByNumTel(const QString &numTel);
@@ -40,10 +41,12 @@ public:
     static void addCustomer(const QString &name, const QString &surname, const QString &numTel, const QString &email);
     static bool containsClient(const QString &telNum);
     static bool containsClient(const int &ID);
+    static QString custID(const QString &telNum);
 
     static void addMaster(const QString &name, const QString &surname, const QString &address, const QString &numTel);
     static bool containsMaster(const QString &telNum);
     static bool containsMaster(const int &ID);
+    static QString masterID(const QString &telNum);
 
     static void addHardware(const QString &name, const QString &price, const QString &quantity);
     static bool containsHardware(const QString &name);

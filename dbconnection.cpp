@@ -73,6 +73,13 @@ QSqlQuery DBConnection::hardwareList()
     return query;
 }
 
+QSqlQuery DBConnection::masterList()
+{
+    if(!query.exec("SELECT * FROM studio.master"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    return query;
+}
+
 QString DBConnection::getMasterIdByNumTel(const QString &numTel)
 {
     if(!query.exec("SELECT id FROM studio.master WHERE telnum = '" + numTel + "'"))
@@ -115,6 +122,14 @@ bool DBConnection::containsClient(const int &ID)
     return query.next();
 }
 
+QString DBConnection::custID(const QString &telNum)
+{
+    if(!query.exec("select id from `studio`.`customer` where telnum = '" + telNum + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toString();
+}
+
 void DBConnection::addMaster(const QString &name, const QString &surname, const QString &address, const QString &numTel)
 {
     //INSERT INTO `studio`.`master` (`name`, `surname`, `address`, `telnum`) VALUES ('Ольга', 'Кравцова', 'Титова 22а', '+380-63-934-45-12');
@@ -136,6 +151,14 @@ bool DBConnection::containsMaster(const int &ID)
     if(!query.exec("select id from `studio`.`master` where id = '" + QString::number(ID) + "'"))
         throw std::runtime_error(query.lastError().text().toStdString());
     return query.next();
+}
+
+QString DBConnection::masterID(const QString &telNum)
+{
+    if(!query.exec("select id from `studio`.`master` where telnum = '" + telNum + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toString();
 }
 
 bool DBConnection::containsHardware(const QString &name)

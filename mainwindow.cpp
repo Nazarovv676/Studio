@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->lineEdit_numTel->setValidator(new QRegularExpressionValidator(*rxNumTel, this));
     ui->lineEdit_addMasterNumTel->setValidator(new QRegularExpressionValidator(*rxNumTel, this));
-
+    ui->lineEdit_addOrderCustTel->setValidator(new QRegularExpressionValidator(*rxNumTel, this));
 }
 
 MainWindow::~MainWindow()
@@ -129,11 +129,12 @@ void MainWindow::on_tabWidget_currentChanged(int index)//обновление id
         //            on_comboBox_searchTableName_activated(ui->comboBox_searchTableName->currentText());
         else if(ui->tabWidget->tabText(index) == "Оформление заказа")
         {
-            ui->lineEdit_addOrderIdOrder->setText(QString::number(DBConnection::orderCount() + 1));
+            //ui->lineEdit_addOrderIdOrder->setText(QString::number(DBConnection::orderCount() + 1));
 
             ui->comboBox_addOrderToCName->clear();//очситка комбобоксов для предотвращения дубликатов
             ui->comboBox_addOrderHardName->clear();
             ui->comboBox_addOrderMaterialName->clear();
+            ui->comboBox_addOrderMaster->clear();
 
             QSqlQuery q = DBConnection::ToCList();//Обновление списков в комбобоксах
             while(q.next())
@@ -144,6 +145,9 @@ void MainWindow::on_tabWidget_currentChanged(int index)//обновление id
             q = DBConnection::hardwareList();
             while(q.next())
                 ui->comboBox_addOrderHardName->addItem(q.value(0).toString());
+            q = DBConnection::masterList();
+            while(q.next())
+                ui->comboBox_addOrderMaster->addItem(q.value(0).toString() + " " + q.value(1).toString() + " " + q.value(2).toString() + " " + q.value(4).toString());
         }
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -339,15 +343,16 @@ void MainWindow::on_pushButton_addOrderDelHard_clicked()
 void MainWindow::on_pushButton_addOrder_clicked()
 {
     try {
-        if(!DBConnection::containsClient(ui->spinBox_addOrderCustId->value()))
-            QMessageBox::warning(this, "Ошибка!", "Нет клиента с таким ID в базе!!!");
-        else if(!DBConnection::containsMaster(ui->spinBox_addOrderMasterId->value()))
-            QMessageBox::warning(this, "Ошибка!", "Нет мастера с таким ID в базе!!!");
+        if(!DBConnection::containsClient(ui->lineEdit_addOrderCustTel->text()))
+            QMessageBox::warning(this, "Ошибка!", "Нет клиента с таким номером телефона в базе!!!");
+//        else if(!DBConnection::containsMaster(ui->lineEdit_addOrderMasterTel->text()))
+//            QMessageBox::warning(this, "Ошибка!", "Нет мастера с таким номером телефона в базе!!!");
         else if(ui->listWidget_addOrderMaterialList->count() == 0)
             QMessageBox::warning(this, "Ошибка!", "Список материалов пуст!!!");
         else
         {
-            DBConnection::addOrder(ui->spinBox_addOrderCustId->text(), ui->spinBox_addOrderMasterId->text(), ui->comboBox_addOrderToCName->currentText(), materialNameList, materialQuantList, hardNameList, hardQuantList);
+            qDebug() <<ui->comboBox_addOrderMaster->currentText().section(' ', 0, 0);
+            DBConnection::addOrder(DBConnection::custID(ui->lineEdit_addOrderCustTel->text()), ui->comboBox_addOrderMaster->currentText().section(' ', 0, 0), ui->comboBox_addOrderToCName->currentText(), materialNameList, materialQuantList, hardNameList, hardQuantList);
 
             materialNameList.clear();//очистка списков материалов и фурнитуры и их цен
             materialQuantList.clear();
