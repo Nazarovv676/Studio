@@ -57,7 +57,7 @@ public:
     static void addTypeOfCloth(const QString &name, const QString &price, const QString &days);
     static bool containsTypeOfCloth(const QString &name);
 
-    static void addOrder(const QString &custID, const QString &masterID, const QString &ToCName, const QStringList &materialName, const QStringList &materialQuant, const QStringList &hardName, const QStringList &hardQuant);
+    static QString addOrder(const QString &custID, const QString &masterID, const QString &ToCName, const QStringList &materialName, const QStringList &materialQuant, const QStringList &hardName, const QStringList &hardQuant);
 };
 
 #endif // DBCONNECTION_H

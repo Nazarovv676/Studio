@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rxString45_ru = new QRegularExpression("[А-я -]{1,45}", QRegularExpression::CaseInsensitiveOption);
     rxStringNum45_eng_ru = new QRegularExpression("[А-яA-z0-9 -]{1,45}", QRegularExpression::CaseInsensitiveOption);
     rxNumTel = new QRegularExpression("\\+\\d{3}\\-\\d{2}\\-\\d{3}\\-\\d{2}\\-\\d{2}");
+    emptiness = new QRegularExpression("{0}", QRegularExpression::CaseInsensitiveOption);
 
     ui->lineEdit_email->setValidator(new QRegularExpressionValidator(*rxEmail, this));
 
@@ -121,13 +122,13 @@ void MainWindow::updateUI()//применяем настройки для инт
 void MainWindow::on_tabWidget_currentChanged(int index)//обновление id клиента во вкладках при листании вкладок
 {
     try {
-        if(ui->tabWidget->tabText(index) == "Регистрация клиента")
+        /*if(ui->tabWidget->tabText(index) == "Регистрация клиента")
             ui->lineEdit_id->setText(QString::number(DBConnection::customersCount() + 1));
         else if(ui->tabWidget->tabText(index) == "Регистрация мастера")
             ui->lineEdit_addMasterID->setText(QString::number(DBConnection::masterCount() + 1));
         //        else if(ui->tabWidget->tabText(index) == "Поиск")
         //            on_comboBox_searchTableName_activated(ui->comboBox_searchTableName->currentText());
-        else if(ui->tabWidget->tabText(index) == "Оформление заказа")
+        else*/ if(ui->tabWidget->tabText(index) == "Оформление заказа")
         {
             //ui->lineEdit_addOrderIdOrder->setText(QString::number(DBConnection::orderCount() + 1));
 
@@ -345,21 +346,20 @@ void MainWindow::on_pushButton_addOrder_clicked()
     try {
         if(!DBConnection::containsClient(ui->lineEdit_addOrderCustTel->text()))
             QMessageBox::warning(this, "Ошибка!", "Нет клиента с таким номером телефона в базе!!!");
-//        else if(!DBConnection::containsMaster(ui->lineEdit_addOrderMasterTel->text()))
-//            QMessageBox::warning(this, "Ошибка!", "Нет мастера с таким номером телефона в базе!!!");
+        //        else if(!DBConnection::containsMaster(ui->lineEdit_addOrderMasterTel->text()))
+        //            QMessageBox::warning(this, "Ошибка!", "Нет мастера с таким номером телефона в базе!!!");
         else if(ui->listWidget_addOrderMaterialList->count() == 0)
             QMessageBox::warning(this, "Ошибка!", "Список материалов пуст!!!");
         else
         {
-            qDebug() <<ui->comboBox_addOrderMaster->currentText().section(' ', 0, 0);
-            DBConnection::addOrder(DBConnection::custID(ui->lineEdit_addOrderCustTel->text()), ui->comboBox_addOrderMaster->currentText().section(' ', 0, 0), ui->comboBox_addOrderToCName->currentText(), materialNameList, materialQuantList, hardNameList, hardQuantList);
+            QString orderID = DBConnection::addOrder(DBConnection::custID(ui->lineEdit_addOrderCustTel->text()), ui->comboBox_addOrderMaster->currentText().section(' ', 0, 0), ui->comboBox_addOrderToCName->currentText(), materialNameList, materialQuantList, hardNameList, hardQuantList);
 
             materialNameList.clear();//очистка списков материалов и фурнитуры и их цен
             materialQuantList.clear();
             hardNameList.clear();
             hardQuantList.clear();
 
-            QMessageBox::information(this, "Успех!", "Заказ добавлен в базу!");
+            QMessageBox::information(this, "Успех!", "Заказ добавлен в базу! ID: " + orderID);
         }
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -370,7 +370,6 @@ void MainWindow::on_pushButton_addOrder_clicked()
 void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
 {
     try {
-
         if(tableName == "Заказ")
         {
             tableModel->setTable("order");
@@ -403,6 +402,9 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
 
             ItemDelegate *itDgToC = new ItemDelegate(rxStringNum45_eng_ru);
             ui->tableView_search->setItemDelegateForColumn(4, itDgToC);
+
+            ItemDelegate *itDgID = new ItemDelegate(emptiness);
+            ui->tableView_search->setItemDelegateForColumn(0, itDgID);
         }
         else if(tableName == "Клиент")
         {

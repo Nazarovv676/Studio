@@ -99,6 +99,7 @@ private:
     QRegularExpression *rxString45_ru;
     QRegularExpression *rxStringNum45_eng_ru;
     QRegularExpression *rxNumTel;
+    QRegularExpression *emptiness;
 };
 
 #endif // MAINWINDOW_H

@@ -40,7 +40,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>5</number>
       </property>
       <property name="iconSize">
        <size>
@@ -561,21 +561,16 @@
           </item>
           <item>
            <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <family>Nunito</family>
+              <pointsize>20</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
             <property name="text">
-             <string>ID клиента:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_id">
-            <property name="toolTip">
-             <string>Это поле не редактируется, а генерируется автоматически</string>
-            </property>
-            <property name="frame">
-             <bool>true</bool>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
+             <string>Регистрация клиента</string>
             </property>
            </widget>
           </item>
@@ -1419,15 +1414,16 @@
           </item>
           <item>
            <widget class="QLabel" name="label_15">
-            <property name="text">
-             <string>ID:</string>
+            <property name="font">
+             <font>
+              <family>Nunito</family>
+              <pointsize>20</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_addMasterID">
-            <property name="readOnly">
-             <bool>true</bool>
+            <property name="text">
+             <string>Регистрация мастера</string>
             </property>
            </widget>
           </item>

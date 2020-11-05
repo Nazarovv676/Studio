@@ -233,12 +233,13 @@ void DBConnection::addHardware(const QString &name, const QString &price, const 
     //UPDATE studio.hardware SET quantity = quantity + 1, price =  10.10  WHERE name = 'Зеленая пуговица'
 }
 
-void DBConnection::addOrder(const QString &custID, const QString &masterID, const QString &ToCName, const QStringList &materialName, const QStringList &materialQuant, const QStringList &hardName, const QStringList &hardQuant)
+QString DBConnection::addOrder(const QString &custID, const QString &masterID, const QString &ToCName, const QStringList &materialName, const QStringList &materialQuant, const QStringList &hardName, const QStringList &hardQuant)
 {
     QString orderID = QString::number(orderCount() + 1);
 
     if(!query.exec("INSERT INTO `studio`.`order` (`id`, `date`, `master_id`, `customer_id`, `typeofcloth_name`) VALUES ('" + orderID + "', '" + QDate::currentDate().toString("yyyy-MM-dd") + "', '" + masterID + "', '" + custID + "', '" + ToCName + "')"))
         throw std::runtime_error(query.lastError().text().toStdString());
+
     for(int i(0); i < materialName.count(); i++)
         if(!query.exec("INSERT INTO `studio`.`material_order` (`quantity`, `order_id`, `material_name`) VALUES ('" + materialQuant[i] + "', '" + orderID + "', '" + materialName[i] + "')"))
             throw std::runtime_error(query.lastError().text().toStdString());
@@ -246,10 +247,7 @@ void DBConnection::addOrder(const QString &custID, const QString &masterID, cons
         if(!query.exec("INSERT INTO `studio`.`hardware_order` (`quantity`, `order_id`, `hardware_name`) VALUES ('" + hardQuant[i] + "', '" + orderID + "', '" + hardName[i] + "')"))
             throw std::runtime_error(query.lastError().text().toStdString());
 
-    //INSERT INTO `studio`.`material_order` (`quantity`, `order_id`, `material_name`) VALUES ('1', '1', 'Нитки синие');
-    //INSERT INTO `studio`.`hardware_order` (`quantity`, `order_id`, `hardware_name`) VALUES ('1', '1', 'Пуговица синяя ');
-
-
+    return orderID;
 }
 
 
