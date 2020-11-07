@@ -90,6 +90,46 @@ QStringList DBConnection::ToCNamesList()
     return list;
 }
 
+QStringList DBConnection::masterIDList()
+{
+    if(!query.exec("SELECT id FROM master"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    QStringList list;
+    while (query.next())
+        list << query.value(0).toString();
+    return list;
+}
+
+QStringList DBConnection::masterTelnumList()
+{
+    if(!query.exec("SELECT telnum FROM master"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    QStringList list;
+    while (query.next())
+        list << query.value(0).toString();
+    return list;
+}
+
+QStringList DBConnection::custIDList()
+{
+    if(!query.exec("SELECT id FROM customer"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    QStringList list;
+    while (query.next())
+        list << query.value(0).toString();
+    return list;
+}
+
+QStringList DBConnection::custTelnumList()
+{
+    if(!query.exec("SELECT telnum FROM customer"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    QStringList list;
+    while (query.next())
+        list << query.value(0).toString();
+    return list;
+}
+
 QString DBConnection::getMasterIdByNumTel(const QString &numTel)
 {
     if(!query.exec("SELECT id FROM studio.master WHERE telnum = '" + numTel + "'"))

@@ -86,6 +86,8 @@ private slots:
 
     void on_pushButton_searchDelete_clicked();
 
+    void on_tableView_search_doubleClicked(const QModelIndex &index);
+
 private:
     void hideNonValidRowsSearchTable(int column, QString compareText);
 

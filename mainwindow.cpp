@@ -375,10 +375,11 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
         if(tableName == "Заказ")
         {
             tableModel->setTable("order");
+
             tableModel->setHeaderData(0, Qt::Horizontal, "ID", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Дата", Qt::DisplayRole);
-            tableModel->setHeaderData(2, Qt::Horizontal, "ID мастера", Qt::DisplayRole);
-            tableModel->setHeaderData(3, Qt::Horizontal, "ID клиента", Qt::DisplayRole);
+            tableModel->setHeaderData(2, Qt::Horizontal, "Мастер", Qt::DisplayRole);
+            tableModel->setHeaderData(3, Qt::Horizontal, "Клиент", Qt::DisplayRole);
             tableModel->setHeaderData(4, Qt::Horizontal, "Тип одежды", Qt::DisplayRole);
 
             //показываем все надписи
@@ -398,21 +399,24 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             //установка надписей на фильтровых поисках
             ui->label_search1->setText("ID:");
             ui->label_search2->setText("Дата:");
-            ui->label_search3->setText("ID мастера:");
-            ui->label_search4->setText("ID клиента:");
+            ui->label_search3->setText("Мастер:");
+            ui->label_search4->setText("Клиент:");
             ui->label_search5->setText("Тип одежды:");
 
-//            ItemDelegate *itDgToC = new ItemDelegate(rxStringNum45_eng_ru);
-//            ui->tableView_search->setItemDelegateForColumn(4, itDgToC);
+            QStringList tocNames = DBConnection::ToCNamesList();
+            QStringList masterIds = DBConnection::masterIDList();
+            QStringList masterTelnums = DBConnection::masterTelnumList();
+            QStringList custIds = DBConnection::custIDList();
+            QStringList custTelnums = DBConnection::custTelnumList();
 
             ItemDelegate *itDgID = new ItemDelegate(emptiness);
-            ui->tableView_search->setItemDelegateForColumn(0, itDgID);
-
-            QStringList tocNames = DBConnection::ToCNamesList();
-
-            qDebug() << tocNames;
-
             ItemDelegateComboBox *itDgToC = new ItemDelegateComboBox(tocNames, tocNames);
+            ItemDelegateComboBox *itDgMaster = new ItemDelegateComboBox(masterIds, masterTelnums);
+            ItemDelegateComboBox *itDgCust = new ItemDelegateComboBox(custIds, custTelnums);
+
+            ui->tableView_search->setItemDelegateForColumn(0, itDgID);
+            ui->tableView_search->setItemDelegateForColumn(2, itDgMaster);
+            ui->tableView_search->setItemDelegateForColumn(3, itDgCust);
             ui->tableView_search->setItemDelegateForColumn(4, itDgToC);
         }
         else if(tableName == "Клиент")
@@ -739,7 +743,6 @@ void MainWindow::on_action_addUser_triggered()
 void MainWindow::on_pushButton_searchDelete_clicked()
 {
     try {
-        qDebug() << ui->tableView_search->currentIndex();
         QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Выход", "Вы уверены, что хотите удалить ?", QMessageBox::No | QMessageBox::Yes);
         if (resBtn == QMessageBox::Yes)
             ui->tableView_search->model()->removeRow(ui->tableView_search->currentIndex().row());
@@ -747,4 +750,13 @@ void MainWindow::on_pushButton_searchDelete_clicked()
         Log::write(e.what());
         QMessageBox::warning(this, "Ошибка", e.what());
     }
+}
+
+void MainWindow::on_tableView_search_doubleClicked(const QModelIndex &index)
+{
+//    if(tableModel->tableName() == "order")
+//    {
+//        if(index.column() == 0)
+
+//    }
 }
