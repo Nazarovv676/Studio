@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "itemdelegate.h"
+#include "itemdelegatecombobox.h"
 
 #include <QDebug>
 #include <QMessageBox>
@@ -41,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     tableModel = new QSqlTableModel(this, DBConnection::database);//задаем базу и выделяем память для модели(для выгрузки информации в таблицу)
+    tableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
 
     //_______________________ставим валидаторы в виде регулярных выражений на ввод________________________________________________________________________
 
@@ -400,11 +402,18 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search4->setText("ID клиента:");
             ui->label_search5->setText("Тип одежды:");
 
-            ItemDelegate *itDgToC = new ItemDelegate(rxStringNum45_eng_ru);
-            ui->tableView_search->setItemDelegateForColumn(4, itDgToC);
+//            ItemDelegate *itDgToC = new ItemDelegate(rxStringNum45_eng_ru);
+//            ui->tableView_search->setItemDelegateForColumn(4, itDgToC);
 
             ItemDelegate *itDgID = new ItemDelegate(emptiness);
             ui->tableView_search->setItemDelegateForColumn(0, itDgID);
+
+            QStringList tocNames = DBConnection::ToCNamesList();
+
+            qDebug() << tocNames;
+
+            ItemDelegateComboBox *itDgToC = new ItemDelegateComboBox(tocNames, tocNames);
+            ui->tableView_search->setItemDelegateForColumn(4, itDgToC);
         }
         else if(tableName == "Клиент")
         {

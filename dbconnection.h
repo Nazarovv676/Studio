@@ -34,6 +34,7 @@ public:
     static QSqlQuery materialList();
     static QSqlQuery hardwareList();
     static QSqlQuery masterList();
+    static QStringList ToCNamesList();
 
     static QString getMasterIdByNumTel(const QString &numTel);
     static QString getCustIdByNumTel(const QString &numTel);

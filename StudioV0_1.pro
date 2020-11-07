@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     dbconnection.cpp \
     itemdelegate.cpp \
+    itemdelegatecombobox.cpp \
     log.cpp \
     main.cpp \
     loginwindow.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
 HEADERS += \
     dbconnection.h \
     itemdelegate.h \
+    itemdelegatecombobox.h \
     log.h \
     loginwindow.h \
     mainwindow.h \
