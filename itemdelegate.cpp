@@ -11,7 +11,7 @@ ItemDelegate::ItemDelegate(QRegularExpression *rxvalidator, QObject *parent):QIt
 QWidget *ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
 {
     QLineEdit *editor = new QLineEdit(parent);
-    editor->setValidator(new QRegularExpressionValidator(*rxvalidator, parent));
+    //editor->setValidator(new QRegularExpressionValidator(*rxvalidator, parent));
     return editor;
 }
 
