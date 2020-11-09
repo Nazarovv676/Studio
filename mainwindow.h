@@ -88,6 +88,14 @@ private slots:
 
     void on_tableView_search_clicked(const QModelIndex &index);
 
+    void on_pushButton_searchDelMat_clicked();
+
+    void on_pushButton_searchDelHar_clicked();
+
+    void on_pushButton_searchAddMat_clicked();
+
+    void on_pushButton_searchAddHar_clicked();
+
 private:
     void hideNonValidRowsSearchTable(int column, QString compareText);
 
@@ -96,6 +104,8 @@ private:
     signUpWindow *signupWindow;
     QStringList materialNameList, materialQuantList, hardNameList, hardQuantList;//Списки названий и цен для заказа
     QSqlTableModel *tableModel;
+    QSqlTableModel *tabModHar;
+    QSqlTableModel *tabModMat;
     QRegularExpression *rxEmail;
     QRegularExpression *rxString45_ru;
     QRegularExpression *rxStringNum45_eng_ru;

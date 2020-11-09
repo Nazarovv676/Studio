@@ -135,16 +135,16 @@ void MainWindow::on_tabWidget_currentChanged(int index)//обновление id
             ui->comboBox_addOrderMaterialName->clear();
             ui->comboBox_addOrderMaster->clear();
 
-            QSqlQuery q = DBConnection::ToCList();//Обновление списков в комбобоксах
+            QSqlQuery q = DBConnection::qToCList();//Обновление списков в комбобоксах
             while(q.next())
                 ui->comboBox_addOrderToCName->addItem(q.value(0).toString());
-            q = DBConnection::materialList();
+            q = DBConnection::tmMaterialList();
             while(q.next())
                 ui->comboBox_addOrderMaterialName->addItem(q.value(0).toString());
-            q = DBConnection::hardwareList();
+            q = DBConnection::tmHardwareList();
             while(q.next())
                 ui->comboBox_addOrderHardName->addItem(q.value(0).toString());
-            q = DBConnection::masterList();
+            q = DBConnection::qMasterList();
             while(q.next())
                 ui->comboBox_addOrderMaster->addItem(q.value(0).toString() + " " + q.value(1).toString() + " " + q.value(2).toString() + " " + q.value(4).toString());
         }
@@ -370,6 +370,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
     try {
         if(tableName == "Заказ")
         {
+            ui->tableView_search->setSortingEnabled(false);
+
             tableModel->setTable("order");
 
             tableModel->setHeaderData(0, Qt::Horizontal, "ID", Qt::DisplayRole);
@@ -422,6 +424,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
         }
         else if(tableName == "Клиент")
         {
+            ui->tableView_search->setSortingEnabled(true);
+
             tableModel->setTable("customer");
             tableModel->setHeaderData(0, Qt::Horizontal, "ID", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Имя", Qt::DisplayRole);
@@ -468,6 +472,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
         }
         else if(tableName == "Мастер")
         {
+            ui->tableView_search->setSortingEnabled(true);
+
             tableModel->setTable("master");
             tableModel->setHeaderData(0, Qt::Horizontal, "ID", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Имя", Qt::DisplayRole);
@@ -514,6 +520,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
         }
         else if(tableName == "Тип одежды")
         {
+            ui->tableView_search->setSortingEnabled(true);
+
             tableModel->setTable("typeofcloth");
             tableModel->setHeaderData(0, Qt::Horizontal, "Наименование", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Рабочих дней на изготовление", Qt::DisplayRole);
@@ -549,6 +557,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
         }
         else if(tableName == "Фурнитура")
         {
+            ui->tableView_search->setSortingEnabled(true);
+
             tableModel->setTable("hardware");
             tableModel->setHeaderData(0, Qt::Horizontal, "Наименование", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Цена", Qt::DisplayRole);
@@ -584,6 +594,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
         }
         else if(tableName == "Материал")
         {
+            ui->tableView_search->setSortingEnabled(true);
+
             tableModel->setTable("material");
             tableModel->setHeaderData(0, Qt::Horizontal, "Наименование", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Цена", Qt::DisplayRole);
@@ -714,7 +726,10 @@ void MainWindow::on_pushButton_searchDelete_clicked()
     try {
         QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Выход", "Вы уверены, что хотите удалить?", QMessageBox::No | QMessageBox::Yes);
         if (resBtn == QMessageBox::Yes)
+        {
             ui->tableView_search->model()->removeRow(ui->tableView_search->currentIndex().row());
+            tableModel->select();
+        }
     } catch (const std::exception& e) {
         Log::write(e.what());
         QMessageBox::warning(this, "Ошибка", e.what());
@@ -731,9 +746,63 @@ void MainWindow::on_tableView_search_clicked(const QModelIndex &index)
             ui->splitter_searchTables->setSizes(QList<int>() << size/4*3 << size/4);
         }
         QString idOrder = ui->tableView_search->model()->data(ui->tableView_search->model()->index(index.row(), 0)).toString();
-        ui->tableView_searchMaterial->setModel(DBConnection::materialList(idOrder));
+        tabModMat = DBConnection::tmMaterialList(idOrder);
+        tabModHar = DBConnection::tmHardwareList(idOrder);
+        ui->tableView_searchMaterial->setModel(tabModMat);
+        ui->tableView_searchHardware->setModel(tabModHar);
+        QStringList matList = DBConnection::materialList();
+        QStringList harList = DBConnection::hardwareList();
+        ItemDelegateComboBox *itDgMat = new ItemDelegateComboBox(matList, matList);
+        ItemDelegateComboBox *itDgHar = new ItemDelegateComboBox(harList, harList);
+        ui->tableView_searchMaterial->setItemDelegateForColumn(1, itDgMat);
+        ui->tableView_searchHardware->setItemDelegateForColumn(1, itDgHar);
         ui->tableView_searchMaterial->hideColumn(2);
-        ui->tableView_searchHardware->setModel(DBConnection::hardwareList(idOrder));
         ui->tableView_searchHardware->hideColumn(2);
+    }
+}
+
+void MainWindow::on_pushButton_searchDelMat_clicked()
+{
+    try {
+        tabModMat->removeRow(ui->tableView_searchMaterial->currentIndex().row());
+        tabModMat->select();
+    } catch (const std::exception& e) {
+        Log::write(e.what());
+        QMessageBox::warning(this, "Ошибка", e.what());
+    }
+}
+
+void MainWindow::on_pushButton_searchDelHar_clicked()
+{
+    try {
+        tabModHar->removeRow(ui->tableView_searchHardware->currentIndex().row());
+        tabModHar->select();
+    } catch (const std::exception& e) {
+        Log::write(e.what());
+        QMessageBox::warning(this, "Ошибка", e.what());
+    }
+}
+
+void MainWindow::on_pushButton_searchAddMat_clicked()
+{
+    try {
+        QString idOrder = ui->tableView_search->model()->data(ui->tableView_search->model()->index(ui->tableView_search->currentIndex().row(), 0)).toString();
+        DBConnection::addMaterialInOrder(idOrder);
+        tabModMat->select();
+    } catch (const std::exception& e) {
+        Log::write(e.what());
+        QMessageBox::warning(this, "Ошибка", e.what());
+    }
+}
+
+void MainWindow::on_pushButton_searchAddHar_clicked()
+{
+    try {
+        QString idOrder = ui->tableView_search->model()->data(ui->tableView_search->model()->index(ui->tableView_search->currentIndex().row(), 0)).toString();
+        DBConnection::addHardwareInOrder(idOrder);
+        tabModHar->select();
+    } catch (const std::exception& e) {
+        Log::write(e.what());
+        QMessageBox::warning(this, "Ошибка", e.what());
     }
 }

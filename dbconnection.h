@@ -30,17 +30,22 @@ public:
 
     static void addUser(const QString &name, const QString &pass);
 
-    static QSqlQuery ToCList();
-    static QSqlQuery materialList();
-    static QSqlQuery hardwareList();
-    static QSqlQuery masterList();
+    static QSqlQuery qToCList();
+    static QSqlQuery tmMaterialList();
+    static QSqlQuery tmHardwareList();
+    static QSqlQuery qMasterList();
     static QStringList ToCNamesList();
     static QStringList masterIDList();
     static QStringList masterTelnumList();
     static QStringList custIDList();
     static QStringList custTelnumList();
-    static QSqlTableModel *materialList(QString orderID);
-    static QSqlTableModel *hardwareList(QString orderID);
+    static QStringList materialList();
+    static QStringList hardwareList();
+    static QSqlTableModel *tmMaterialList(QString orderID);
+    static QSqlTableModel *tmHardwareList(QString orderID);
+
+    static void addMaterialInOrder(const QString &order);
+    static void addHardwareInOrder(const QString &order);
 
     static QString getMasterIdByNumTel(const QString &numTel);
     static QString getCustIdByNumTel(const QString &numTel);

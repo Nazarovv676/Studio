@@ -1729,8 +1729,8 @@
              <height>631</height>
             </rect>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_13">
-            <item>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_41">
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_40">
@@ -1799,7 +1799,7 @@
               </item>
              </layout>
             </item>
-            <item>
+            <item row="1" column="0">
              <widget class="QSplitter" name="splitter_searchTables">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -1976,6 +1976,24 @@
                  </widget>
                 </item>
                 <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_26">
+                  <item>
+                   <widget class="QPushButton" name="pushButton_searchDelMat">
+                    <property name="text">
+                     <string>Удалить</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_searchAddMat">
+                    <property name="text">
+                     <string>Добавить</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
                  <widget class="QTableView" name="tableView_searchHardware">
                   <property name="selectionMode">
                    <enum>QAbstractItemView::SingleSelection</enum>
@@ -1990,6 +2008,24 @@
                    <bool>false</bool>
                   </attribute>
                  </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_48">
+                  <item>
+                   <widget class="QPushButton" name="pushButton_searchDelHar">
+                    <property name="text">
+                     <string>Удалить</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton_searchAddHar">
+                    <property name="text">
+                     <string>Добавить</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
