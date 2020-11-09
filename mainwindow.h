@@ -86,12 +86,11 @@ private slots:
 
     void on_pushButton_searchDelete_clicked();
 
-    void on_tableView_search_doubleClicked(const QModelIndex &index);
+    void on_tableView_search_clicked(const QModelIndex &index);
 
 private:
     void hideNonValidRowsSearchTable(int column, QString compareText);
 
-    //______________________________________________
     Ui::MainWindow *ui;
     SettingsWindow *settingsWindow;///Окно для настроек
     signUpWindow *signupWindow;

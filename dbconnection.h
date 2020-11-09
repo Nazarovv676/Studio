@@ -7,15 +7,15 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlTableModel>
 #include <exception>
 
 class DBConnection
 {
 public:
     static QSqlDatabase database;
-
     static QString host;
-    static QString dbName;//имя базы данных
+    static QString dbName;
     static QString userName;
     static QString userPass;
     static QString port;
@@ -39,7 +39,8 @@ public:
     static QStringList masterTelnumList();
     static QStringList custIDList();
     static QStringList custTelnumList();
-
+    static QSqlTableModel *materialList(QString orderID);
+    static QSqlTableModel *hardwareList(QString orderID);
 
     static QString getMasterIdByNumTel(const QString &numTel);
     static QString getCustIdByNumTel(const QString &numTel);

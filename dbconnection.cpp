@@ -130,6 +130,28 @@ QStringList DBConnection::custTelnumList()
     return list;
 }
 
+QSqlTableModel *DBConnection::materialList(QString orderID)
+{
+    QSqlTableModel *tb = new QSqlTableModel(nullptr, database);
+    tb->setTable("material_order");
+    tb->setFilter("order_id = " + orderID);
+    tb->select();
+    tb->setHeaderData(0, Qt::Horizontal, "Количество", Qt::DisplayRole);
+    tb->setHeaderData(1, Qt::Horizontal, "Наименование", Qt::DisplayRole);
+    return tb;
+}
+
+QSqlTableModel *DBConnection::hardwareList(QString orderID)
+{
+    QSqlTableModel *tb = new QSqlTableModel(nullptr, database);
+    tb->setTable("hardware_order");
+    tb->setFilter("order_id = " + orderID);
+    tb->select();
+    tb->setHeaderData(0, Qt::Horizontal, "Количество", Qt::DisplayRole);
+    tb->setHeaderData(1, Qt::Horizontal, "Наименование", Qt::DisplayRole);
+    return tb;
+}
+
 QString DBConnection::getMasterIdByNumTel(const QString &numTel)
 {
     if(!query.exec("SELECT id FROM studio.master WHERE telnum = '" + numTel + "'"))

@@ -13,34 +13,32 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    //__________________________________________________________________________________________________
     updateUI();//применяем настройки из файла к интерфейсу
-
     //убираем пока не нужные виждеты в поиске
     ui->label_search1->setText("Выберите имя таблицы еще раз для обновления информации");
     ui->label_search2->hide();
     ui->label_search3->hide();
     ui->label_search4->hide();
     ui->label_search5->hide();
-
     ui->lineEdit_search1->hide();
     ui->lineEdit_search2->hide();
     ui->lineEdit_search3->hide();
     ui->lineEdit_search4->hide();
     ui->lineEdit_search5->hide();
-
+    ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
+    ui->tableView_searchMaterial->hide();
+    ui->splitter_searchTables->setSizes(QList<int>() << 1000 << 0);
+    ui->splitter_searchTables->setCollapsible(0, false);
+    ui->splitter_searchTables->handle(1)->setEnabled(false);
     //убираем доступ к регистрации пользователя если не root
     if(DBConnection::userName != "root")
     {
         ui->action_addUser->setEnabled(false);
         ui->action_addUser->setToolTip("Для доступа к привилегиям зайдите с помощью имени 'root'");
     }
-    //__________________________________________________________________________________________________
+
     for(int i(0); i < ui->tabWidget->count(); i++)//имитируем переход по всем вкладкам для обновления id при входе в программу
         on_tabWidget_currentChanged(i);
-
-
     tableModel = new QSqlTableModel(this, DBConnection::database);//задаем базу и выделяем память для модели(для выгрузки информации в таблицу)
     tableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
 
@@ -71,8 +69,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete settingsWindow;
     delete ui;
+    delete settingsWindow;
+    delete signupWindow;
+    delete tableModel;
+    delete rxEmail;
+    delete rxString45_ru;
+    delete rxStringNum45_eng_ru;
+    delete rxNumTel;
+    delete emptiness;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)//перегрузка события закрытия
@@ -88,7 +93,7 @@ void MainWindow::closeEvent(QCloseEvent *event)//перегрузка событ
     }
 }
 
-void MainWindow::on_action_settings_triggered()
+void MainWindow::on_action_settings_triggered()//открытие окна настроек
 {
     settingsWindow = new SettingsWindow(this);
     settingsWindow->setShowUI(true);
@@ -114,7 +119,6 @@ void MainWindow::updateUI()//применяем настройки для инт
             qApp->setPalette(Settings::blackPalette);
         else
             qApp->setPalette(Settings::whitePalette);
-
     } catch (const std::exception& e) {
         Log::write(e.what());
         QMessageBox::warning(this, "Ошибка", e.what());
@@ -124,16 +128,8 @@ void MainWindow::updateUI()//применяем настройки для инт
 void MainWindow::on_tabWidget_currentChanged(int index)//обновление id клиента во вкладках при листании вкладок
 {
     try {
-        /*if(ui->tabWidget->tabText(index) == "Регистрация клиента")
-            ui->lineEdit_id->setText(QString::number(DBConnection::customersCount() + 1));
-        else if(ui->tabWidget->tabText(index) == "Регистрация мастера")
-            ui->lineEdit_addMasterID->setText(QString::number(DBConnection::masterCount() + 1));
-        //        else if(ui->tabWidget->tabText(index) == "Поиск")
-        //            on_comboBox_searchTableName_activated(ui->comboBox_searchTableName->currentText());
-        else*/ if(ui->tabWidget->tabText(index) == "Оформление заказа")
+        if(ui->tabWidget->tabText(index) == "Оформление заказа")
         {
-            //ui->lineEdit_addOrderIdOrder->setText(QString::number(DBConnection::orderCount() + 1));
-
             ui->comboBox_addOrderToCName->clear();//очситка комбобоксов для предотвращения дубликатов
             ui->comboBox_addOrderHardName->clear();
             ui->comboBox_addOrderMaterialName->clear();
@@ -418,6 +414,11 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->tableView_search->setItemDelegateForColumn(2, itDgMaster);
             ui->tableView_search->setItemDelegateForColumn(3, itDgCust);
             ui->tableView_search->setItemDelegateForColumn(4, itDgToC);
+
+            ui->tableView_searchHardware->show();
+            ui->tableView_searchMaterial->show();
+            ui->splitter_searchTables->setSizes(QList<int>() << 1000 << 0);
+            ui->splitter_searchTables->handle(1)->setEnabled(true);
         }
         else if(tableName == "Клиент")
         {
@@ -452,11 +453,18 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ItemDelegate *itDgName = new ItemDelegate(rxString45_ru);
             ItemDelegate *itDgNumTel = new ItemDelegate(rxNumTel);
             ItemDelegate *itDgEmail = new ItemDelegate(rxEmail);
+            ItemDelegate *itDgID = new ItemDelegate(emptiness);
 
+            ui->tableView_search->setItemDelegateForColumn(0, itDgID);
             ui->tableView_search->setItemDelegateForColumn(1, itDgName);
             ui->tableView_search->setItemDelegateForColumn(2, itDgName);
             ui->tableView_search->setItemDelegateForColumn(3, itDgNumTel);
             ui->tableView_search->setItemDelegateForColumn(4, itDgEmail);
+
+            ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
+            ui->tableView_searchMaterial->hide();
+            ui->splitter_searchTables->setSizes(QList<int>() << 1000 << 0);
+            ui->splitter_searchTables->handle(1)->setEnabled(false);
         }
         else if(tableName == "Мастер")
         {
@@ -491,11 +499,18 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ItemDelegate *itDgName = new ItemDelegate(rxString45_ru);
             ItemDelegate *itDgNumTel = new ItemDelegate(rxNumTel);
             ItemDelegate *itDgAddress = new ItemDelegate(rxStringNum45_eng_ru);
+            ItemDelegate *itDgID = new ItemDelegate(emptiness);
 
+            ui->tableView_search->setItemDelegateForColumn(0, itDgID);
             ui->tableView_search->setItemDelegateForColumn(1, itDgName);
             ui->tableView_search->setItemDelegateForColumn(2, itDgName);
             ui->tableView_search->setItemDelegateForColumn(3, itDgAddress);
             ui->tableView_search->setItemDelegateForColumn(4, itDgNumTel);
+
+            ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
+            ui->tableView_searchMaterial->hide();
+            ui->splitter_searchTables->setSizes(QList<int>() << 1000 << 0);
+            ui->splitter_searchTables->handle(1)->setEnabled(false);
         }
         else if(tableName == "Тип одежды")
         {
@@ -526,6 +541,11 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
+
+            ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
+            ui->tableView_searchMaterial->hide();
+            ui->splitter_searchTables->setSizes(QList<int>() << 1000 << 0);
+            ui->splitter_searchTables->handle(1)->setEnabled(false);
         }
         else if(tableName == "Фурнитура")
         {
@@ -556,6 +576,11 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
+
+            ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
+            ui->tableView_searchMaterial->hide();
+            ui->splitter_searchTables->setSizes(QList<int>() << 1000 << 0);
+            ui->splitter_searchTables->handle(1)->setEnabled(false);
         }
         else if(tableName == "Материал")
         {
@@ -586,68 +611,12 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
+
+            ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
+            ui->tableView_searchMaterial->hide();
+            ui->splitter_searchTables->setSizes(QList<int>() << 1000 << 0);
+            ui->splitter_searchTables->handle(1)->setEnabled(false);
         }
-        else if(tableName == "Списки материалов в заказах")
-        {
-            tableModel->setTable("material_order");
-            tableModel->setHeaderData(0, Qt::Horizontal, "Количество", Qt::DisplayRole);
-            tableModel->setHeaderData(1, Qt::Horizontal, "Наименование материала", Qt::DisplayRole);
-            tableModel->setHeaderData(2, Qt::Horizontal, "ID заказа", Qt::DisplayRole);
-
-            //показываем нужные надписи
-            ui->label_search1->show();
-            ui->label_search2->show();
-            ui->label_search3->show();
-            ui->label_search4->hide();
-            ui->label_search5->hide();
-
-            //показываем нужные строки для ввода
-            ui->lineEdit_search1->show();
-            ui->lineEdit_search2->show();
-            ui->lineEdit_search3->show();
-            ui->lineEdit_search4->hide();
-            ui->lineEdit_search5->hide();
-
-            //установка надписей на фильтровых поисках
-            ui->label_search1->setText("Количество:");
-            ui->label_search2->setText("Наименование материала:");
-            ui->label_search3->setText("ID заказа:");
-
-            ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
-
-            ui->tableView_search->setItemDelegateForColumn(1, itDgName);
-        }
-        else if(tableName == "Списки фурнитуры в заказах")
-        {
-            tableModel->setTable("hardware_order");
-            tableModel->setHeaderData(0, Qt::Horizontal, "Количество", Qt::DisplayRole);
-            tableModel->setHeaderData(1, Qt::Horizontal, "Наименование Фурнитуры", Qt::DisplayRole);
-            tableModel->setHeaderData(2, Qt::Horizontal, "ID заказа", Qt::DisplayRole);
-
-            //показываем нужные надписи
-            ui->label_search1->show();
-            ui->label_search2->show();
-            ui->label_search3->show();
-            ui->label_search4->hide();
-            ui->label_search5->hide();
-
-            //показываем нужные строки для ввода
-            ui->lineEdit_search1->show();
-            ui->lineEdit_search2->show();
-            ui->lineEdit_search3->show();
-            ui->lineEdit_search4->hide();
-            ui->lineEdit_search5->hide();
-
-            //установка надписей на фильтровых поисках
-            ui->label_search1->setText("Количество:");
-            ui->label_search2->setText("Наименование фурнитуры:");
-            ui->label_search3->setText("ID заказа:");
-
-            ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
-
-            ui->tableView_search->setItemDelegateForColumn(1, itDgName);
-        }
-
         tableModel->select();//взятие данных из таблиц
         ui->tableView_search->setModel(tableModel);
     } catch (const std::exception& e) {
@@ -743,7 +712,7 @@ void MainWindow::on_action_addUser_triggered()
 void MainWindow::on_pushButton_searchDelete_clicked()
 {
     try {
-        QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Выход", "Вы уверены, что хотите удалить ?", QMessageBox::No | QMessageBox::Yes);
+        QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Выход", "Вы уверены, что хотите удалить?", QMessageBox::No | QMessageBox::Yes);
         if (resBtn == QMessageBox::Yes)
             ui->tableView_search->model()->removeRow(ui->tableView_search->currentIndex().row());
     } catch (const std::exception& e) {
@@ -752,11 +721,19 @@ void MainWindow::on_pushButton_searchDelete_clicked()
     }
 }
 
-void MainWindow::on_tableView_search_doubleClicked(const QModelIndex &index)
+void MainWindow::on_tableView_search_clicked(const QModelIndex &index)
 {
-//    if(tableModel->tableName() == "order")
-//    {
-//        if(index.column() == 0)
-
-//    }
+    if(tableModel->tableName() == "order")
+    {
+        if(ui->splitter_searchTables->sizes()[1] == 0)
+        {
+            int size = ui->splitter_searchTables->size().width();
+            ui->splitter_searchTables->setSizes(QList<int>() << size/4*3 << size/4);
+        }
+        QString idOrder = ui->tableView_search->model()->data(ui->tableView_search->model()->index(index.row(), 0)).toString();
+        ui->tableView_searchMaterial->setModel(DBConnection::materialList(idOrder));
+        ui->tableView_searchMaterial->hideColumn(2);
+        ui->tableView_searchHardware->setModel(DBConnection::hardwareList(idOrder));
+        ui->tableView_searchHardware->hideColumn(2);
+    }
 }

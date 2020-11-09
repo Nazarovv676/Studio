@@ -40,7 +40,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>5</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1773,16 +1773,6 @@
                     <string>Материал</string>
                    </property>
                   </item>
-                  <item>
-                   <property name="text">
-                    <string>Списки материалов в заказах</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Списки фурнитуры в заказах</string>
-                   </property>
-                  </item>
                  </widget>
                 </item>
                </layout>
@@ -1810,7 +1800,7 @@
              </layout>
             </item>
             <item>
-             <widget class="QSplitter" name="splitter">
+             <widget class="QSplitter" name="splitter_searchTables">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -1820,7 +1810,7 @@
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <widget class="QWidget" name="">
+              <widget class="QWidget" name="layoutWidget">
                <layout class="QVBoxLayout" name="verticalLayout_12">
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_47">
@@ -1967,7 +1957,7 @@
                 </item>
                </layout>
               </widget>
-              <widget class="QWidget" name="">
+              <widget class="QWidget" name="layoutWidget">
                <layout class="QVBoxLayout" name="verticalLayout_11">
                 <item>
                  <widget class="QTableView" name="tableView_searchMaterial">
@@ -1977,6 +1967,9 @@
                   <property name="sortingEnabled">
                    <bool>true</bool>
                   </property>
+                  <attribute name="horizontalHeaderStretchLastSection">
+                   <bool>true</bool>
+                  </attribute>
                   <attribute name="verticalHeaderVisible">
                    <bool>false</bool>
                   </attribute>
@@ -1990,6 +1983,9 @@
                   <property name="sortingEnabled">
                    <bool>true</bool>
                   </property>
+                  <attribute name="horizontalHeaderStretchLastSection">
+                   <bool>true</bool>
+                  </attribute>
                   <attribute name="verticalHeaderVisible">
                    <bool>false</bool>
                   </attribute>
