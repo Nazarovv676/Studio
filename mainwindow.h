@@ -98,6 +98,8 @@ private slots:
 
     void on_pushButton_searchAddHar_clicked();
 
+    void on_pushButton_searchExport_clicked();
+
 private:
     void hideNonValidRowsSearchTable(int column, QString compareText);
 

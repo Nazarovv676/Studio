@@ -40,7 +40,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>5</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1789,6 +1789,17 @@
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_searchExport">
+                <property name="text">
+                 <string>Экспортировать в файл</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="Resources.qrc">
+                  <normaloff>:/image/upload.png</normaloff>:/image/upload.png</iconset>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_searchDelete">

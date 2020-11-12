@@ -9,5 +9,6 @@
         <file>image/technical-support.png</file>
         <file>image/icons8-settings-24.png</file>
         <file>image/search.png</file>
+        <file>image/upload.png</file>
     </qresource>
 </RCC>

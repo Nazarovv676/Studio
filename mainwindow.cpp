@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_search5->hide();
     ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
     ui->tableView_searchMaterial->hide();
+    ui->pushButton_searchExport->hide();
     ui->splitter_searchTables->setSizes(QList<int>() << 1000 << 0);
     ui->splitter_searchTables->setCollapsible(0, false);
     ui->splitter_searchTables->handle(1)->setEnabled(false);
@@ -402,6 +403,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search4->setText("Клиент:");
             ui->label_search5->setText("Тип одежды:");
 
+            ui->pushButton_searchExport->show();
+
             QStringList tocNames = DBConnection::ToCNamesList();
             QStringList masterIds = DBConnection::masterIDList();
             QStringList masterTelnums = DBConnection::masterTelnumList();
@@ -455,6 +458,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search4->setText("Номер телефона:");
             ui->label_search5->setText("Электронная почта:");
 
+            ui->pushButton_searchExport->hide();
+
             ItemDelegate *itDgName = new ItemDelegate(rxString45_ru);
             ItemDelegate *itDgNumTel = new ItemDelegate(rxNumTel);
             ItemDelegate *itDgEmail = new ItemDelegate(rxEmail);
@@ -503,6 +508,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search4->setText("Адрес:");
             ui->label_search5->setText("Номер телефона:");
 
+            ui->pushButton_searchExport->hide();
+
             ItemDelegate *itDgName = new ItemDelegate(rxString45_ru);
             ItemDelegate *itDgNumTel = new ItemDelegate(rxNumTel);
             ItemDelegate *itDgAddress = new ItemDelegate(rxStringNum45_eng_ru);
@@ -547,6 +554,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search2->setText("Рабочих дней на изготовление:");
             ui->label_search3->setText("Цена:");
 
+            ui->pushButton_searchExport->hide();
+
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
@@ -584,6 +593,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search2->setText("Цена:");
             ui->label_search3->setText("Количество в наличии:");
 
+            ui->pushButton_searchExport->hide();
+
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
@@ -620,6 +631,8 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->label_search1->setText("Наименование:");
             ui->label_search2->setText("Цена:");
             ui->label_search3->setText("Количество в наличии:");
+
+            ui->pushButton_searchExport->hide();
 
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
 
@@ -804,6 +817,22 @@ void MainWindow::on_pushButton_searchAddHar_clicked()
         QString idOrder = ui->tableView_search->model()->data(ui->tableView_search->model()->index(ui->tableView_search->currentIndex().row(), 0)).toString();
         DBConnection::addHardwareInOrder(idOrder);
         tabModHar->select();
+    } catch (const std::exception& e) {
+        Log::write(e.what());
+        QMessageBox::warning(this, "Ошибка", e.what());
+    }
+}
+
+void MainWindow::on_pushButton_searchExport_clicked()
+{
+    try {
+        QModelIndex curRowIDIndex = ui->tableView_search->model()->index(ui->tableView_search->currentIndex().row(), 0);
+        if(curRowIDIndex.row() != -1)
+        {
+            QString data = ui->tableView_search->model()->data(curRowIDIndex).toString();
+            order.write(data);
+            QMessageBox::information(this, "Успех!", "Файл заказа находится по пути: " + order.lastPath());
+        }
     } catch (const std::exception& e) {
         Log::write(e.what());
         QMessageBox::warning(this, "Ошибка", e.what());
