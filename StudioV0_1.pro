@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,6 +23,7 @@ SOURCES += \
     main.cpp \
     loginwindow.cpp \
     mainwindow.cpp \
+    orderwriter.cpp \
     settings.cpp \
     settingswindow.cpp \
     signupwindow.cpp
@@ -34,6 +35,7 @@ HEADERS += \
     log.h \
     loginwindow.h \
     mainwindow.h \
+    orderwriter.h \
     settings.h \
     settingswindow.h \
     signupwindow.h

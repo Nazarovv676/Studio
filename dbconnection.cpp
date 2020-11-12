@@ -59,14 +59,14 @@ QSqlQuery DBConnection::qToCList()
     return query;
 }
 
-QSqlQuery DBConnection::tmMaterialList()
+QSqlQuery DBConnection::qMaterialNameList()
 {
     if(!query.exec("SELECT name FROM studio.material"))
         throw std::runtime_error(query.lastError().text().toStdString());
     return query;
 }
 
-QSqlQuery DBConnection::tmHardwareList()
+QSqlQuery DBConnection::qHardwareNameList()
 {
     if(!query.exec("SELECT name FROM studio.hardware"))
         throw std::runtime_error(query.lastError().text().toStdString());
@@ -140,6 +140,26 @@ QStringList DBConnection::materialList()
     return list;
 }
 
+QString DBConnection::materialList(QString orderID)
+{
+    QSqlTableModel *tm = tmMaterialList(orderID);
+    QString list;
+
+    for(int i(0); i < tm->rowCount(QModelIndex()); i++)
+        list += tm->data(tm->index(i, 2)).toString() + " - " + tm->data(tm->index(i, 1)).toString() + "; ";
+    return list;
+}
+
+QString DBConnection::hardwareList(QString orderID)
+{
+    QSqlTableModel *tm = tmHardwareList(orderID);
+    QString list;
+
+    for(int i(0); i < tm->rowCount(QModelIndex()); i++)
+        list += tm->data(tm->index(i, 2)).toString() + " - " + tm->data(tm->index(i, 1)).toString() + "; ";
+    return list;
+}
+
 QStringList DBConnection::hardwareList()
 {
     if(!query.exec("SELECT name FROM hardware"))
@@ -152,24 +172,34 @@ QStringList DBConnection::hardwareList()
 
 QSqlTableModel *DBConnection::tmMaterialList(QString orderID)
 {
-    QSqlTableModel *tb = new QSqlTableModel(nullptr, database);
-    tb->setTable("material_order");
-    tb->setFilter("order_id = " + orderID);
-    tb->select();
-    tb->setHeaderData(0, Qt::Horizontal, "Количество", Qt::DisplayRole);
-    tb->setHeaderData(1, Qt::Horizontal, "Наименование", Qt::DisplayRole);
-    return tb;
+    QSqlTableModel *tm = new QSqlTableModel(nullptr, database);
+    tm->setTable("material_order");
+    tm->setFilter("order_id = " + orderID);
+    tm->select();
+    tm->setHeaderData(1, Qt::Horizontal, "Количество", Qt::DisplayRole);
+    tm->setHeaderData(2, Qt::Horizontal, "Наименование", Qt::DisplayRole);
+    tm->setEditStrategy(QSqlTableModel::OnFieldChange);
+    return tm;
 }
 
 QSqlTableModel *DBConnection::tmHardwareList(QString orderID)
 {
-    QSqlTableModel *tb = new QSqlTableModel(nullptr, database);
-    tb->setTable("hardware_order");
-    tb->setFilter("order_id = " + orderID);
-    tb->select();
-    tb->setHeaderData(0, Qt::Horizontal, "Количество", Qt::DisplayRole);
-    tb->setHeaderData(1, Qt::Horizontal, "Наименование", Qt::DisplayRole);
-    return tb;
+    QSqlTableModel *tm = new QSqlTableModel(nullptr, database);
+    tm->setTable("hardware_order");
+    tm->setFilter("order_id = " + orderID);
+    tm->select();
+    tm->setHeaderData(1, Qt::Horizontal, "Количество", Qt::DisplayRole);
+    tm->setHeaderData(2, Qt::Horizontal, "Наименование", Qt::DisplayRole);
+    tm->setEditStrategy(QSqlTableModel::OnFieldChange);
+    return tm;
+}
+
+QString DBConnection::custIDByOrder(QString orderID)
+{
+    if(!query.exec("SELECT customer_id FROM studio.order where id = '" + orderID + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toString();
 }
 
 void DBConnection::addMaterialInOrder(const QString &order)
@@ -186,7 +216,7 @@ void DBConnection::addHardwareInOrder(const QString &order)
             throw std::runtime_error(query.lastError().text().toStdString());
 }
 
-QString DBConnection::getMasterIdByNumTel(const QString &numTel)
+QString DBConnection::masterIdByNumTel(const QString &numTel)
 {
     if(!query.exec("SELECT id FROM studio.master WHERE telnum = '" + numTel + "'"))
         throw std::runtime_error(query.lastError().text().toStdString());
@@ -196,7 +226,23 @@ QString DBConnection::getMasterIdByNumTel(const QString &numTel)
         return NULL;
 }
 
-QString DBConnection::getCustIdByNumTel(const QString &numTel)
+QString DBConnection::masterIDByOrder(QString orderID)
+{
+    if(!query.exec("SELECT master_id FROM studio.order WHERE id = '" + orderID + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toString();
+}
+
+QString DBConnection::masterNameByID(QString ID)
+{
+    if(!query.exec("SELECT name, surname FROM master WHERE id = '" + ID + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toString() + " " + query.value(1).toString();
+}
+
+QString DBConnection::custIdByNumTel(const QString &numTel)
 {
     if(!query.exec("SELECT id FROM studio.customer WHERE telnum = '" + numTel + "'"))
         throw std::runtime_error(query.lastError().text().toStdString());
@@ -206,13 +252,21 @@ QString DBConnection::getCustIdByNumTel(const QString &numTel)
         return NULL;
 }
 
+QString DBConnection::custNameByID(QString ID)
+{
+    if(!query.exec("SELECT name, surname FROM customer WHERE id = '" + ID + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toString() + " " + query.value(1).toString();
+}
+
 void DBConnection::addCustomer(const QString &name, const QString &surname, const QString &numTel, const QString &email)
 {
     if(!query.exec("INSERT INTO `studio`.`customer` (`id`, `name`, `surname`, `telnum`, `mail`) VALUES ('" + QString::number(customersCount() + 1) + "', '" + name + "', '" + surname + "', '" + numTel + "', '" + email + "')"))
         throw std::runtime_error(query.lastError().text().toStdString());
 }
 
-bool DBConnection::containsClient(const QString &telNum)
+bool DBConnection::containsCust(const QString &telNum)
 {
     if(!query.exec("select id from `studio`.`customer` where telnum = '" + telNum + "'"))
         throw std::runtime_error(query.lastError().text().toStdString());
@@ -221,7 +275,7 @@ bool DBConnection::containsClient(const QString &telNum)
     return false;
 }
 
-bool DBConnection::containsClient(const int &ID)
+bool DBConnection::containsCust(const int &ID)
 {
     if(!query.exec("select id from `studio`.`customer` where id = '" + QString::number(ID) + "'"))
         throw std::runtime_error(query.lastError().text().toStdString());
@@ -310,6 +364,14 @@ bool DBConnection::containsTypeOfCloth(const QString &name)
     return false;
 }
 
+QString DBConnection::typeOfClothByOrder(QString orderID)
+{
+    if(!query.exec("SELECT typeofcloth_name FROM studio.order WHERE id = '" + orderID + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toString();
+}
+
 void DBConnection::addMaterial(const QString &name, const QString &price, const QString &quantity)
 {
     QString PRICE(price);
@@ -354,6 +416,14 @@ QString DBConnection::addOrder(const QString &custID, const QString &masterID, c
             throw std::runtime_error(query.lastError().text().toStdString());
 
     return orderID;
+}
+
+QString DBConnection::orderPrice(QString orderID)
+{
+    if(!query.exec("CALL orderPrice('" + orderID + "')"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toString();
 }
 
 

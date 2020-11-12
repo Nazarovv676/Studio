@@ -8,6 +8,8 @@
 #include "settingswindow.h"
 #include "signupwindow.h"
 
+#include "orderwriter.h"
+
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QSqlTableModel>
@@ -111,6 +113,8 @@ private:
     QRegularExpression *rxStringNum45_eng_ru;
     QRegularExpression *rxNumTel;
     QRegularExpression *emptiness;
+
+    OrderWriter order;
 };
 
 #endif // MAINWINDOW_H

@@ -138,10 +138,10 @@ void MainWindow::on_tabWidget_currentChanged(int index)//обновление id
             QSqlQuery q = DBConnection::qToCList();//Обновление списков в комбобоксах
             while(q.next())
                 ui->comboBox_addOrderToCName->addItem(q.value(0).toString());
-            q = DBConnection::tmMaterialList();
+            q = DBConnection::qMaterialNameList();
             while(q.next())
                 ui->comboBox_addOrderMaterialName->addItem(q.value(0).toString());
-            q = DBConnection::tmHardwareList();
+            q = DBConnection::qHardwareNameList();
             while(q.next())
                 ui->comboBox_addOrderHardName->addItem(q.value(0).toString());
             q = DBConnection::qMasterList();
@@ -165,7 +165,7 @@ void MainWindow::on_pushButton_addUser_clicked()//добавление клие�
             QMessageBox::warning(this, "Ошибка!", "Введите номер телефона клиента!!!");
         else if(ui->lineEdit_email->text() == NULL)
             QMessageBox::warning(this, "Ошибка!", "Введите адрес электронной почты клиента!!!");
-        else if(DBConnection::containsClient(ui->lineEdit_numTel->text()))
+        else if(DBConnection::containsCust(ui->lineEdit_numTel->text()))
             QMessageBox::warning(this, "Ошибка!", "Клиент с таким номером уже зарегистрирован!!!");
         else if(!ui->lineEdit_numTel->hasAcceptableInput())
             QMessageBox::warning(this, "Ошибка!", "Номер телефона не поддерживаемого формата!!!");
@@ -174,7 +174,7 @@ void MainWindow::on_pushButton_addUser_clicked()//добавление клие�
         else
         {
             DBConnection::addCustomer(ui->lineEdit_name->text(), ui->lineEdit_surname->text(), ui->lineEdit_numTel->text(), ui->lineEdit_email->text());
-            QMessageBox::information(this, "Успешно!", "Клиент " + ui->lineEdit_surname->text() + " " + ui->lineEdit_name->text() + " теперь есть в базе! ID: " + DBConnection::getCustIdByNumTel(ui->lineEdit_numTel->text()));//добавить метод для поиска по телеону(телефоны в базе не повторяются)
+            QMessageBox::information(this, "Успешно!", "Клиент " + ui->lineEdit_surname->text() + " " + ui->lineEdit_name->text() + " теперь есть в базе! ID: " + DBConnection::custIdByNumTel(ui->lineEdit_numTel->text()));//добавить метод для поиска по телеону(телефоны в базе не повторяются)
         }
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -293,7 +293,7 @@ void MainWindow::on_pushButton_addMaster_clicked()//добавление в ба
         else
         {
             DBConnection::addMaster(ui->lineEdit_addMasterName->text(), ui->lineEdit_addMasterSurname->text(), ui->lineEdit_addMasterAddress->text(), ui->lineEdit_addMasterNumTel->text());
-            QMessageBox::information(this, "Успешно!", "Мастер " + ui->lineEdit_addMasterSurname->text() + " " + ui->lineEdit_addMasterName->text() + " теперь есть в базе! ID: " + DBConnection::getMasterIdByNumTel(ui->lineEdit_addMasterNumTel->text()));//добавить метод для поиска по телеону(телефоны в базе не повторяются)
+            QMessageBox::information(this, "Успешно!", "Мастер " + ui->lineEdit_addMasterSurname->text() + " " + ui->lineEdit_addMasterName->text() + " теперь есть в базе! ID: " + DBConnection::masterIdByNumTel(ui->lineEdit_addMasterNumTel->text()));//добавить метод для поиска по телеону(телефоны в базе не повторяются)
         }
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -342,7 +342,7 @@ void MainWindow::on_pushButton_addOrderDelHard_clicked()
 void MainWindow::on_pushButton_addOrder_clicked()
 {
     try {
-        if(!DBConnection::containsClient(ui->lineEdit_addOrderCustTel->text()))
+        if(!DBConnection::containsCust(ui->lineEdit_addOrderCustTel->text()))
             QMessageBox::warning(this, "Ошибка!", "Нет клиента с таким номером телефона в базе!!!");
         //        else if(!DBConnection::containsMaster(ui->lineEdit_addOrderMasterTel->text()))
         //            QMessageBox::warning(this, "Ошибка!", "Нет мастера с таким номером телефона в базе!!!");
@@ -358,6 +358,7 @@ void MainWindow::on_pushButton_addOrder_clicked()
             hardQuantList.clear();
 
             QMessageBox::information(this, "Успех!", "Заказ добавлен в базу! ID: " + orderID);
+            order.write(orderID);
         }
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -754,10 +755,12 @@ void MainWindow::on_tableView_search_clicked(const QModelIndex &index)
         QStringList harList = DBConnection::hardwareList();
         ItemDelegateComboBox *itDgMat = new ItemDelegateComboBox(matList, matList);
         ItemDelegateComboBox *itDgHar = new ItemDelegateComboBox(harList, harList);
-        ui->tableView_searchMaterial->setItemDelegateForColumn(1, itDgMat);
-        ui->tableView_searchHardware->setItemDelegateForColumn(1, itDgHar);
-        ui->tableView_searchMaterial->hideColumn(2);
-        ui->tableView_searchHardware->hideColumn(2);
+        ui->tableView_searchMaterial->setItemDelegateForColumn(2, itDgMat);
+        ui->tableView_searchHardware->setItemDelegateForColumn(2, itDgHar);
+        ui->tableView_searchMaterial->hideColumn(3);//прячем айди заказа
+        ui->tableView_searchHardware->hideColumn(3);
+        ui->tableView_searchMaterial->hideColumn(0);//прячем айди самой записи
+        ui->tableView_searchHardware->hideColumn(0);
     }
 }
 
