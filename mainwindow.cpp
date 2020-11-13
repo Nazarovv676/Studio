@@ -40,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     for(int i(0); i < ui->tabWidget->count(); i++)//имитируем переход по всем вкладкам для обновления id при входе в программу
         on_tabWidget_currentChanged(i);
-    tableModel = new QSqlTableModel(this, DBConnection::database);//задаем базу и выделяем память для модели(для выгрузки информации в таблицу)
-    tableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
 
     //_______________________ставим валидаторы в виде регулярных выражений на ввод________________________________________________________________________
 
@@ -370,6 +368,10 @@ void MainWindow::on_pushButton_addOrder_clicked()
 void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
 {
     try {
+        //delete tableModel;//удаляем все данные про таблицу в принципе
+        tableModel = new QSqlTableModel(this, DBConnection::database);//задаем базу и выделяем память для модели(для выгрузки информации в таблицу)
+        tableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
+
         if(tableName == "Заказ")
         {
             ui->tableView_search->setSortingEnabled(false);

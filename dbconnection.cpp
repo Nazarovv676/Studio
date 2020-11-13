@@ -50,6 +50,8 @@ void DBConnection::addUser(const QString &name, const QString &pass)
         throw std::runtime_error(query.lastError().text().toStdString());
     if (!query.exec("GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `" + Settings::settings.value("CONNECTION/DBNAME").toString() + "`.* TO '" + name + "'@'" + host + "'"))
         throw std::runtime_error(query.lastError().text().toStdString());
+    if (!query.exec("GRANT EXECUTE ON " + Settings::settings.value("CONNECTION/DBNAME").toString() + ".* TO '" + name + "'@'" + host + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
 }
 
 QSqlQuery DBConnection::qToCList()
