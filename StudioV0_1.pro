@@ -20,6 +20,7 @@ SOURCES += \
     itemdelegate.cpp \
     itemdelegatecheckbox.cpp \
     itemdelegatecombobox.cpp \
+    itemdelegatedate.cpp \
     itemdelegatedoublespinbox.cpp \
     itemdelegatespinbox.cpp \
     log.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     itemdelegate.h \
     itemdelegatecheckbox.h \
     itemdelegatecombobox.h \
+    itemdelegatedate.h \
     itemdelegatedoublespinbox.h \
     itemdelegatespinbox.h \
     log.h \

@@ -5,6 +5,7 @@
 #include "itemdelegatecheckbox.h"
 #include "itemdelegatespinbox.h"
 #include "itemdelegatedoublespinbox.h"
+#include "itemdelegatedate.h"
 
 #include <QDebug>
 #include <QMessageBox>
@@ -178,7 +179,7 @@ void MainWindow::on_pushButton_addUser_clicked()//добавление клие�
         else
         {
             DBConnection::addCustomer(ui->lineEdit_name->text(), ui->lineEdit_surname->text(), ui->lineEdit_numTel->text(), ui->lineEdit_email->text());
-            QMessageBox::information(this, "Успешно!", "Клиент " + ui->lineEdit_surname->text() + " " + ui->lineEdit_name->text() + " теперь есть в базе! ID: " + DBConnection::custIdByNumTel(ui->lineEdit_numTel->text()));//добавить метод для поиска по телеону(телефоны в базе не повторяются)
+            QMessageBox::information(this, "Успешно!", "Клиент " + ui->lineEdit_surname->text() + " " + ui->lineEdit_name->text() + " теперь есть в базе! Номер: " + DBConnection::custIdByNumTel(ui->lineEdit_numTel->text()));//добавить метод для поиска по телеону(телефоны в базе не повторяются)
         }
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -297,7 +298,7 @@ void MainWindow::on_pushButton_addMaster_clicked()//добавление в ба
         else
         {
             DBConnection::addMaster(ui->lineEdit_addMasterName->text(), ui->lineEdit_addMasterSurname->text(), ui->lineEdit_addMasterAddress->text(), ui->lineEdit_addMasterNumTel->text());
-            QMessageBox::information(this, "Успешно!", "Мастер " + ui->lineEdit_addMasterSurname->text() + " " + ui->lineEdit_addMasterName->text() + " теперь есть в базе! ID: " + DBConnection::masterIdByNumTel(ui->lineEdit_addMasterNumTel->text()));//добавить метод для поиска по телеону(телефоны в базе не повторяются)
+            QMessageBox::information(this, "Успешно!", "Мастер " + ui->lineEdit_addMasterSurname->text() + " " + ui->lineEdit_addMasterName->text() + " теперь есть в базе! Номер: " + DBConnection::masterIdByNumTel(ui->lineEdit_addMasterNumTel->text()));//добавить метод для поиска по телеону(телефоны в базе не повторяются)
         }
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -361,7 +362,7 @@ void MainWindow::on_pushButton_addOrder_clicked()
             hardNameList.clear();
             hardQuantList.clear();
 
-            QMessageBox::information(this, "Успех!", "Заказ добавлен в базу! ID: " + orderID);
+            QMessageBox::information(this, "Успех!", "Заказ добавлен в базу! Номер: " + orderID);
             order.write(orderID);
         }
     } catch (const std::exception& e) {
@@ -428,6 +429,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ItemDelegateComboBox *itDgMaster = new ItemDelegateComboBox(masterIds, masterTelnums);
             ItemDelegateComboBox *itDgCust = new ItemDelegateComboBox(custIds, custTelnums);
             ItemDelegateCheckBox *itDgStat = new ItemDelegateCheckBox();
+            ItemDelegateDate *itDgDate = new ItemDelegateDate("dd.MM.yyyy");
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgEp);//дату и ID менять нельзя
             ui->tableView_search->setItemDelegateForColumn(1, itDgEp);
@@ -446,7 +448,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->tableView_search->setSortingEnabled(true);
 
             tableModel->setTable("customer");
-            tableModel->setHeaderData(0, Qt::Horizontal, "ID", Qt::DisplayRole);
+            tableModel->setHeaderData(0, Qt::Horizontal, "Номер", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Имя", Qt::DisplayRole);
             tableModel->setHeaderData(2, Qt::Horizontal, "Фамилия", Qt::DisplayRole);
             tableModel->setHeaderData(3, Qt::Horizontal, "Номер телефона", Qt::DisplayRole);
@@ -470,7 +472,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->lineEdit_search5->show();
 
             //установка надписей на фильтровых поисках
-            ui->label_search1->setText("ID:");
+            ui->label_search1->setText("Номер:");
             ui->label_search2->setText("Имя:");
             ui->label_search3->setText("Фамилия:");
             ui->label_search4->setText("Номер телефона:");
@@ -499,7 +501,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->tableView_search->setSortingEnabled(true);
 
             tableModel->setTable("master");
-            tableModel->setHeaderData(0, Qt::Horizontal, "ID", Qt::DisplayRole);
+            tableModel->setHeaderData(0, Qt::Horizontal, "Номер", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Имя", Qt::DisplayRole);
             tableModel->setHeaderData(2, Qt::Horizontal, "Фамилия", Qt::DisplayRole);
             tableModel->setHeaderData(3, Qt::Horizontal, "Адрес", Qt::DisplayRole);
@@ -523,7 +525,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->lineEdit_search5->show();
 
             //установка надписей на фильтровых поисках
-            ui->label_search1->setText("ID:");
+            ui->label_search1->setText("Номер:");
             ui->label_search2->setText("Имя:");
             ui->label_search3->setText("Фамилия:");
             ui->label_search4->setText("Адрес:");
@@ -691,27 +693,73 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
     }
 }
 
-void MainWindow::hideNonValidRowsSearchTable(int column, QString compareText, QString /*alternativeText*/)
+void MainWindow::hideNonValidRowsSearchTable(int column, QString compareText, typeSearch type)//скрываем строки неподходящие по поиску
 {
     for(int i(0); i < tableModel->rowCount(); i++)
-        if(compareText.contains("<"))
+        if(type == Text)
         {
-            QString compareTextToNum = compareText;
-            compareTextToNum.remove("<");
-            if (tableModel->data(tableModel->index(i, column)).toDouble() > compareTextToNum.toDouble())
-                ui->tableView_search->hideRow(i);
+            if(compareText.contains("<<"))//диапазон
+            {
+                double from = compareText.section("<<", 0, 0).toDouble();//от 5
+                double to = compareText.section("<<", 1, 1).toDouble();//до 10
+                if (tableModel->data(tableModel->index(i, column)).toDouble() < from || tableModel->data(tableModel->index(i, column)).toDouble() > to)
+                    ui->tableView_search->hideRow(i);
+            }
+            else if(compareText.contains("<"))//меньше
+            {
+                QString compareTextToNum = compareText;
+                compareTextToNum.remove("<");
+                if (tableModel->data(tableModel->index(i, column)).toDouble() > compareTextToNum.toDouble())
+                    ui->tableView_search->hideRow(i);
+            }
+            else if(compareText.contains(">"))
+            {
+                QString compareTextToNum = compareText;
+                compareTextToNum.remove(">");
+                if (tableModel->data(tableModel->index(i, column)).toDouble() < compareTextToNum.toDouble())
+                    ui->tableView_search->hideRow(i);
+            }
+            else
+            {
+                if(!tableModel->data(tableModel->index(i, column)).toString().contains(compareText, Qt::CaseInsensitive))
+                    ui->tableView_search->hideRow(i);
+            }
         }
-        else if(compareText.contains(">"))
+        else if(type == Date)
         {
-            QString compareTextToNum = compareText;
-            compareTextToNum.remove(">");
-            if (tableModel->data(tableModel->index(i, column)).toDouble() < compareTextToNum.toDouble())
-                ui->tableView_search->hideRow(i);
-        }
-        else
-        {
-            if(!tableModel->data(tableModel->index(i, column)).toString().contains(compareText, Qt::CaseInsensitive))
-                ui->tableView_search->hideRow(i);
+            if(compareText.contains("<<"))//диапазон
+            {
+                QDate date = tableModel->data(tableModel->index(i, column)).toDate();
+                QDate from = QDate::fromString(compareText.section("<<", 0, 0), "dd.MM.yyyy");
+                QDate to = QDate::fromString(compareText.section("<<", 1, 1), "dd.MM.yyyy");
+                if(date.isValid() && from.isValid() && to.isValid())
+                    if (date < from || date > to)
+                        ui->tableView_search->hideRow(i);
+            }
+            else if(compareText.contains("<"))//меньше
+            {
+                QString removedText = compareText;
+                QDate compareDate = QDate::fromString(removedText.remove("<"), "dd.MM.yyyy");
+                QDate date = tableModel->data(tableModel->index(i, column)).toDate();
+                if(date.isValid() && compareDate.isValid())
+                    if (date > compareDate)
+                        ui->tableView_search->hideRow(i);
+            }
+            else if(compareText.contains(">"))
+            {
+                QString removedText = compareText;
+                QDate compareDate = QDate::fromString(removedText.remove(">"), "dd.MM.yyyy");
+                QDate date = tableModel->data(tableModel->index(i, column)).toDate();
+                if(date.isValid() && compareDate.isValid())
+                    if (date < compareDate)
+                        ui->tableView_search->hideRow(i);
+            }
+            else
+            {
+                QDate date = QDate::fromString(tableModel->data(tableModel->index(i, column)).toString(), "yyyy-MM-dd");
+                if(!date.toString("dd.MM.yyyy").contains(compareText, Qt::CaseInsensitive))
+                    ui->tableView_search->hideRow(i);
+            }
         }
 }
 
@@ -721,12 +769,16 @@ void MainWindow::updateSearchTable()
         for(int i(0); i < tableModel->rowCount(); i++)
             ui->tableView_search->showRow(i);
 
-
         if(!ui->lineEdit_search1->isHidden())
             hideNonValidRowsSearchTable(0, ui->lineEdit_search1->text());
 
         if(!ui->lineEdit_search2->isHidden())
-            hideNonValidRowsSearchTable(1, ui->lineEdit_search2->text());
+        {
+            if(tableModel->tableName() == "order")
+                hideNonValidRowsSearchTable(1, ui->lineEdit_search2->text(), Date);
+            else
+                hideNonValidRowsSearchTable(1, ui->lineEdit_search2->text());
+        }
 
         if(!ui->lineEdit_search3->isHidden())
             hideNonValidRowsSearchTable(2, ui->lineEdit_search3->text());

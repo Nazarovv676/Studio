@@ -29,6 +29,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+   enum typeSearch{Text, Date};
+
 private slots:
     //__________________________custom events or overrides_____________________
     void updateUI();
@@ -105,7 +107,7 @@ private slots:
     void on_radioButton_searchUnfulfilled_clicked();
 
 private:
-    void hideNonValidRowsSearchTable(int column, QString compareText, QString alternativeText = nullptr);
+    void hideNonValidRowsSearchTable(int column, QString compareText, typeSearch = Text);
 
     Ui::MainWindow *ui;
     SettingsWindow *settingsWindow;///Окно для настроек
