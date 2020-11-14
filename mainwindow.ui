@@ -1911,7 +1911,7 @@
                   <item>
                    <widget class="QRadioButton" name="radioButton_searchCompleted">
                     <property name="text">
-                     <string>Выполненые</string>
+                     <string>Выполненные</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -1924,7 +1924,7 @@
                   <item>
                    <widget class="QRadioButton" name="radioButton_searchUnfulfilled">
                     <property name="text">
-                     <string>Не выполненые</string>
+                     <string>Невыполненные</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -1997,6 +1997,13 @@
               <widget class="QWidget" name="layoutWidget">
                <layout class="QVBoxLayout" name="verticalLayout_11">
                 <item>
+                 <widget class="QLabel" name="label_30">
+                  <property name="text">
+                   <string>Материалы</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QTableView" name="tableView_searchMaterial">
                   <property name="selectionMode">
                    <enum>QAbstractItemView::SingleSelection</enum>
@@ -2029,6 +2036,13 @@
                    </widget>
                   </item>
                  </layout>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_31">
+                  <property name="text">
+                   <string>Фурнитура</string>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QTableView" name="tableView_searchHardware">

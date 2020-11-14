@@ -3,6 +3,8 @@
 #include "itemdelegate.h"
 #include "itemdelegatecombobox.h"
 #include "itemdelegatecheckbox.h"
+#include "itemdelegatespinbox.h"
+#include "itemdelegatedoublespinbox.h"
 
 #include <QDebug>
 #include <QMessageBox>
@@ -479,9 +481,9 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ItemDelegate *itDgName = new ItemDelegate(rxString45_ru);
             ItemDelegate *itDgNumTel = new ItemDelegate(rxNumTel);
             ItemDelegate *itDgEmail = new ItemDelegate(rxEmail);
-            ItemDelegate *itDgID = new ItemDelegate(emptiness);
+            ItemDelegate *itDgEp = new ItemDelegate(emptiness);
 
-            ui->tableView_search->setItemDelegateForColumn(0, itDgID);
+            ui->tableView_search->setItemDelegateForColumn(0, itDgEp);
             ui->tableView_search->setItemDelegateForColumn(1, itDgName);
             ui->tableView_search->setItemDelegateForColumn(2, itDgName);
             ui->tableView_search->setItemDelegateForColumn(3, itDgNumTel);
@@ -579,8 +581,12 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->pushButton_searchExport->hide();
 
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
+            ItemDelegateSpinBox *itDgSb = new ItemDelegateSpinBox(ui->spinBox_addToCDays->minimum(), ui->spinBox_addToCDays->maximum());
+            ItemDelegateDoubleSpinBox *itDgDsb = new ItemDelegateDoubleSpinBox(ui->doubleSpinBox_addToCPrice->minimum(), ui->doubleSpinBox_addToCPrice->maximum());
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
+            ui->tableView_search->setItemDelegateForColumn(1, itDgSb);
+            ui->tableView_search->setItemDelegateForColumn(2, itDgDsb);
 
             ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
             ui->tableView_searchMaterial->hide();
@@ -621,8 +627,11 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->pushButton_searchExport->hide();
 
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
+            ItemDelegateDoubleSpinBox *itDgDsb = new ItemDelegateDoubleSpinBox(ui->doubleSpinBox_addToCPrice->minimum(), ui->doubleSpinBox_addToCPrice->maximum());
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
+            ui->tableView_search->setItemDelegateForColumn(1, itDgDsb);
+            ui->tableView_search->setItemDelegateForColumn(2, itDgDsb);
 
             ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
             ui->tableView_searchMaterial->hide();
@@ -663,8 +672,11 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->pushButton_searchExport->hide();
 
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
+            ItemDelegateDoubleSpinBox *itDgDsb = new ItemDelegateDoubleSpinBox(ui->doubleSpinBox_addToCPrice->minimum(), ui->doubleSpinBox_addToCPrice->maximum());
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
+            ui->tableView_search->setItemDelegateForColumn(1, itDgDsb);
+            ui->tableView_search->setItemDelegateForColumn(2, itDgDsb);
 
             ui->tableView_searchHardware->hide();//спрячем таблички для вывода информации в информационнные таблички поиска
             ui->tableView_searchMaterial->hide();
