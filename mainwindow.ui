@@ -265,7 +265,7 @@
                             <double>0.010000000000000</double>
                            </property>
                            <property name="maximum">
-                            <double>9999.989999999999782</double>
+                            <double>9999999999.989999771118164</double>
                            </property>
                           </widget>
                          </item>
@@ -369,18 +369,18 @@
                           </widget>
                          </item>
                          <item>
-                          <widget class="QSpinBox" name="spinBox_addOrderHardQuant">
+                          <widget class="QDoubleSpinBox" name="doubleSpinBox_addOrderHardQuant">
                            <property name="sizePolicy">
-                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                              <horstretch>0</horstretch>
                              <verstretch>0</verstretch>
                             </sizepolicy>
                            </property>
                            <property name="minimum">
-                            <number>1</number>
+                            <double>0.010000000000000</double>
                            </property>
                            <property name="maximum">
-                            <number>9999</number>
+                            <double>9999999999.989999771118164</double>
                            </property>
                           </widget>
                          </item>
@@ -938,12 +938,12 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox_harQuan">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_harQuan">
                  <property name="minimum">
-                  <number>1</number>
+                  <double>0.010000000000000</double>
                  </property>
                  <property name="maximum">
-                  <number>99999</number>
+                  <double>9999999999.989999771118164</double>
                  </property>
                 </widget>
                </item>
@@ -1095,12 +1095,12 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox_matQuan">
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_matQuan">
                  <property name="minimum">
-                  <number>1</number>
+                  <double>0.010000000000000</double>
                  </property>
                  <property name="maximum">
-                  <number>99999</number>
+                  <double>9999999999.989999771118164</double>
                  </property>
                 </widget>
                </item>
@@ -1907,6 +1907,32 @@
                      <widget class="QLineEdit" name="lineEdit_search5"/>
                     </item>
                    </layout>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="radioButton_searchCompleted">
+                    <property name="text">
+                     <string>Выполненые</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                    <property name="autoExclusive">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="radioButton_searchUnfulfilled">
+                    <property name="text">
+                     <string>Не выполненые</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                    <property name="autoExclusive">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <spacer name="horizontalSpacer_50">

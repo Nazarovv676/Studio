@@ -100,8 +100,12 @@ private slots:
 
     void on_pushButton_searchExport_clicked();
 
+    void on_radioButton_searchCompleted_clicked();
+
+    void on_radioButton_searchUnfulfilled_clicked();
+
 private:
-    void hideNonValidRowsSearchTable(int column, QString compareText);
+    void hideNonValidRowsSearchTable(int column, QString compareText, QString alternativeText = nullptr);
 
     Ui::MainWindow *ui;
     SettingsWindow *settingsWindow;///Окно для настроек

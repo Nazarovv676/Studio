@@ -378,13 +378,15 @@ void DBConnection::addMaterial(const QString &name, const QString &price, const 
 {
     QString PRICE(price);
     PRICE.replace(",", ".");
+    QString QUANTITY(quantity);
+    QUANTITY.replace(",", ".");
 
     if(!containsMaterial(name))
     {
-        if(!query.exec("INSERT INTO `studio`.`material` (`name`, `price`, `quantity`) VALUES ('" + name + "', '" + PRICE + "', '" + quantity + "')"))
+        if(!query.exec("INSERT INTO `studio`.`material` (`name`, `price`, `quantity`) VALUES ('" + name + "', '" + PRICE + "', '" + QUANTITY + "')"))
             throw std::runtime_error(query.lastError().text().toStdString());
     }
-    else if(!query.exec("UPDATE studio.material SET quantity = quantity + " + quantity + ", price = " + PRICE + " WHERE name = '" + name + "'"))
+    else if(!query.exec("UPDATE studio.material SET quantity = quantity + " + QUANTITY + ", price = " + PRICE + " WHERE name = '" + name + "'"))
         throw std::runtime_error(query.lastError().text().toStdString());
 }
 
@@ -392,13 +394,15 @@ void DBConnection::addHardware(const QString &name, const QString &price, const 
 {
     QString PRICE(price);
     PRICE.replace(",", ".");
+    QString QUANTITY(quantity);
+    QUANTITY.replace(",", ".");
 
     if(!containsHardware(name))
     {
-        if(!query.exec("INSERT INTO `studio`.`hardware` (`name`, `price`, `quantity`) VALUES ('" + name + "', '" + PRICE + "', '" + quantity + "')"))
+        if(!query.exec("INSERT INTO `studio`.`hardware` (`name`, `price`, `quantity`) VALUES ('" + name + "', '" + PRICE + "', '" + QUANTITY + "')"))
             throw std::runtime_error(query.lastError().text().toStdString());
     }
-    else if(!query.exec("UPDATE studio.hardware SET quantity = quantity + " + quantity + ", price = " + PRICE + " WHERE name = '" + name + "'"))
+    else if(!query.exec("UPDATE studio.hardware SET quantity = quantity + " + QUANTITY + ", price = " + PRICE + " WHERE name = '" + name + "'"))
         throw std::runtime_error(query.lastError().text().toStdString());
     //UPDATE studio.hardware SET quantity = quantity + 1, price =  10.10  WHERE name = 'Зеленая пуговица'
 }

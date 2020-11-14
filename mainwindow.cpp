@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "itemdelegate.h"
 #include "itemdelegatecombobox.h"
+#include "itemdelegatecheckbox.h"
 
 #include <QDebug>
 #include <QMessageBox>
@@ -20,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_search3->hide();
     ui->label_search4->hide();
     ui->label_search5->hide();
+    ui->radioButton_searchCompleted->hide();
+    ui->radioButton_searchUnfulfilled->hide();
     ui->lineEdit_search1->hide();
     ui->lineEdit_search2->hide();
     ui->lineEdit_search3->hide();
@@ -226,7 +229,7 @@ void MainWindow::on_pushButton_addMaterial_clicked()//добавление в б
         if(ui->addMatName->text() == NULL)
             QMessageBox::warning(this, "Ошибка!", "Введите наименование материала!!!");
         else
-            DBConnection::addMaterial(ui->addMatName->text(), ui->doubleSpinBox_matPrice->text(), ui->spinBox_matQuan->text());
+            DBConnection::addMaterial(ui->addMatName->text(), ui->doubleSpinBox_matPrice->text(), ui->doubleSpinBox_matQuan->text());
         ui->statusbar->showMessage("Информация про материал успешно добавлена/обновлена!!!", MESSAGETIMEOUT);
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -240,7 +243,7 @@ void MainWindow::on_pushButton_addHardware_clicked()//добавление в б
         if(ui->addHarName->text() == NULL)
             QMessageBox::warning(this, "Ошибка!", "Введите наименование фурнитуры!!!");
         else
-            DBConnection::addHardware(ui->addHarName->text(), ui->doubleSpinBox_harPrice->text(), ui->spinBox_harQuan->text());
+            DBConnection::addHardware(ui->addHarName->text(), ui->doubleSpinBox_harPrice->text(), ui->doubleSpinBox_harQuan->text());
         ui->statusbar->showMessage("Информация про фурнитуру успешно добавлена/обновлена!!!", MESSAGETIMEOUT);
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -322,9 +325,9 @@ void MainWindow::on_pushButton_addOrderDelMaterial_clicked()
 void MainWindow::on_pushButton_addOrderAddHard_clicked()
 {
     hardNameList << ui->comboBox_addOrderHardName->currentText();
-    hardQuantList << ui->spinBox_addOrderHardQuant->text().replace(",", ".");
+    hardQuantList << ui->doubleSpinBox_addOrderHardQuant->text().replace(",", ".");
 
-    ui->listWidget_addOrderHardList->addItem(ui->comboBox_addOrderHardName->currentText() + '\t' + ui->spinBox_addOrderHardQuant->text().replace(",", "."));
+    ui->listWidget_addOrderHardList->addItem(ui->comboBox_addOrderHardName->currentText() + '\t' + ui->doubleSpinBox_addOrderHardQuant->text().replace(",", "."));
 }
 
 void MainWindow::on_pushButton_addOrderDelHard_clicked()
@@ -378,11 +381,16 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
 
             tableModel->setTable("order");
 
-            tableModel->setHeaderData(0, Qt::Horizontal, "ID", Qt::DisplayRole);
+            tableModel->setHeaderData(0, Qt::Horizontal, "Номер", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Дата", Qt::DisplayRole);
             tableModel->setHeaderData(2, Qt::Horizontal, "Мастер", Qt::DisplayRole);
             tableModel->setHeaderData(3, Qt::Horizontal, "Клиент", Qt::DisplayRole);
             tableModel->setHeaderData(4, Qt::Horizontal, "Тип одежды", Qt::DisplayRole);
+            tableModel->setHeaderData(5, Qt::Horizontal, "Статус выполнения", Qt::DisplayRole);
+
+
+            ui->radioButton_searchCompleted->show();
+            ui->radioButton_searchUnfulfilled->show();
 
             //показываем все надписи
             ui->label_search1->show();
@@ -399,7 +407,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->lineEdit_search5->show();
 
             //установка надписей на фильтровых поисках
-            ui->label_search1->setText("ID:");
+            ui->label_search1->setText("Номер:");
             ui->label_search2->setText("Дата:");
             ui->label_search3->setText("Мастер:");
             ui->label_search4->setText("Клиент:");
@@ -413,15 +421,18 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             QStringList custIds = DBConnection::custIDList();
             QStringList custTelnums = DBConnection::custTelnumList();
 
-            ItemDelegate *itDgID = new ItemDelegate(emptiness);
+            ItemDelegate *itDgEp = new ItemDelegate(emptiness);
             ItemDelegateComboBox *itDgToC = new ItemDelegateComboBox(tocNames, tocNames);
             ItemDelegateComboBox *itDgMaster = new ItemDelegateComboBox(masterIds, masterTelnums);
             ItemDelegateComboBox *itDgCust = new ItemDelegateComboBox(custIds, custTelnums);
+            ItemDelegateCheckBox *itDgStat = new ItemDelegateCheckBox();
 
-            ui->tableView_search->setItemDelegateForColumn(0, itDgID);
+            ui->tableView_search->setItemDelegateForColumn(0, itDgEp);//дату и ID менять нельзя
+            ui->tableView_search->setItemDelegateForColumn(1, itDgEp);
             ui->tableView_search->setItemDelegateForColumn(2, itDgMaster);
             ui->tableView_search->setItemDelegateForColumn(3, itDgCust);
             ui->tableView_search->setItemDelegateForColumn(4, itDgToC);
+            ui->tableView_search->setItemDelegateForColumn(5, itDgStat);
 
             ui->tableView_searchHardware->show();
             ui->tableView_searchMaterial->show();
@@ -438,6 +449,9 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(2, Qt::Horizontal, "Фамилия", Qt::DisplayRole);
             tableModel->setHeaderData(3, Qt::Horizontal, "Номер телефона", Qt::DisplayRole);
             tableModel->setHeaderData(4, Qt::Horizontal, "Электронная почта", Qt::DisplayRole);
+
+            ui->radioButton_searchCompleted->hide();
+            ui->radioButton_searchUnfulfilled->hide();
 
             //показываем все надписи
             ui->label_search1->show();
@@ -489,6 +503,9 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(3, Qt::Horizontal, "Адрес", Qt::DisplayRole);
             tableModel->setHeaderData(4, Qt::Horizontal, "Номер телефона", Qt::DisplayRole);
 
+            ui->radioButton_searchCompleted->hide();
+            ui->radioButton_searchUnfulfilled->hide();
+
             //показываем все надписи
             ui->label_search1->show();
             ui->label_search2->show();
@@ -537,6 +554,9 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(1, Qt::Horizontal, "Рабочих дней на изготовление", Qt::DisplayRole);
             tableModel->setHeaderData(2, Qt::Horizontal, "Цена", Qt::DisplayRole);
 
+            ui->radioButton_searchCompleted->hide();
+            ui->radioButton_searchUnfulfilled->hide();
+
             //показываем нужные надписи
             ui->label_search1->show();
             ui->label_search2->show();
@@ -575,6 +595,9 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(0, Qt::Horizontal, "Наименование", Qt::DisplayRole);
             tableModel->setHeaderData(1, Qt::Horizontal, "Цена", Qt::DisplayRole);
             tableModel->setHeaderData(2, Qt::Horizontal, "Количество в наличии", Qt::DisplayRole);
+
+            ui->radioButton_searchCompleted->hide();
+            ui->radioButton_searchUnfulfilled->hide();
 
             //показываем нужные надписи
             ui->label_search1->show();
@@ -615,6 +638,9 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             tableModel->setHeaderData(1, Qt::Horizontal, "Цена", Qt::DisplayRole);
             tableModel->setHeaderData(2, Qt::Horizontal, "Количество в наличии", Qt::DisplayRole);
 
+            ui->radioButton_searchCompleted->hide();
+            ui->radioButton_searchUnfulfilled->hide();
+
             //показываем нужные надписи
             ui->label_search1->show();
             ui->label_search2->show();
@@ -653,7 +679,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
     }
 }
 
-void MainWindow::hideNonValidRowsSearchTable(int column, QString compareText)
+void MainWindow::hideNonValidRowsSearchTable(int column, QString compareText, QString /*alternativeText*/)
 {
     for(int i(0); i < tableModel->rowCount(); i++)
         if(compareText.contains("<"))
@@ -698,6 +724,14 @@ void MainWindow::updateSearchTable()
 
         if(!ui->lineEdit_search5->isHidden())
             hideNonValidRowsSearchTable(4, ui->lineEdit_search5->text());
+
+        if(!ui->radioButton_searchCompleted->isHidden())
+        {
+            if(ui->radioButton_searchCompleted->isChecked() && !ui->radioButton_searchUnfulfilled->isChecked())
+                hideNonValidRowsSearchTable(5, "1");
+            if(!ui->radioButton_searchCompleted->isChecked() && ui->radioButton_searchUnfulfilled->isChecked())
+                hideNonValidRowsSearchTable(5, "0");
+        }
 
     } catch (const std::exception& e) {
         Log::write(e.what());
@@ -839,4 +873,14 @@ void MainWindow::on_pushButton_searchExport_clicked()
         Log::write(e.what());
         QMessageBox::warning(this, "Ошибка", e.what());
     }
+}
+
+void MainWindow::on_radioButton_searchCompleted_clicked()
+{
+    updateSearchTable();
+}
+
+void MainWindow::on_radioButton_searchUnfulfilled_clicked()
+{
+    updateSearchTable();
 }
