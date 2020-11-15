@@ -182,7 +182,7 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
                 {
                     QPieSeries *series = new QPieSeries();
                     QDate startDate(from);
-                    for(int years(0); years < yearCount; years++)
+                    for(int years(0); years <= yearCount; years++)
                     {
                         QDate finishDate(startDate);
                         if(to.year() - finishDate.year() >= 1)
