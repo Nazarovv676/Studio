@@ -3,6 +3,7 @@
 
 #include "dbconnection.h"
 #include "log.h"
+#include "DonutBreakDownChart/donutbreakdownchart.h"
 
 #include <QDebug>
 #include <exception>
@@ -27,46 +28,10 @@ StatisticWindow::StatisticWindow(StatsProp::TypeSearch type, QWidget *parent) :
     ui->comboBox_typeSearch->setCurrentIndex(currIndex);
 
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+    ui->graphicsView->setRubberBand(QChartView::HorizontalRubberBand);
+    ui->dateEdit_from->setDate(QDate::currentDate());
 
     updateUI(_type, StatsProp::Line);
-
-//    QBarSet *set0 = new QBarSet("Jane");
-//    QBarSet *set1 = new QBarSet("John");
-//    QBarSet *set2 = new QBarSet("Axel");
-//    QBarSet *set3 = new QBarSet("Mary");
-//    QBarSet *set4 = new QBarSet("Samantha");
-
-//    *set0 << 1 << 2 << 3 << 4 << 5 << 6;
-//    *set1 << 5 << 0 << 0 << 4 << 0 << 7;
-//    *set2 << 3 << 5 << 8 << 13 << 8 << 5;
-//    *set3 << 5 << 6 << 7 << 3 << 4 << 5;
-//    *set4 << 9 << 7 << 5 << 3 << 1 << 2;
-//    QBarSeries *series = new QBarSeries();
-//    series->append(set0);
-//    series->append(set1);
-//    series->append(set2);
-//    series->append(set3);
-//    series->append(set4);
-//    QChart *chart = new QChart();
-//    chart->addSeries(series);
-//    chart->setTitle("Simple barchart example");
-//    chart->setAnimationOptions(QChart::SeriesAnimations);
-//    QStringList categories;
-//    categories << "Jan" << "Feb" << "Mar" << "Apr" << "May" << "Jun";
-//    QBarCategoryAxis *axisX = new QBarCategoryAxis();
-//    axisX->append(categories);
-//    chart->addAxis(axisX, Qt::AlignBottom);
-//    series->attachAxis(axisX);
-
-//    QValueAxis *axisY = new QValueAxis();
-//    axisY->setRange(0,15);
-//    chart->addAxis(axisY, Qt::AlignLeft);
-//    series->attachAxis(axisY);
-//    chart->legend()->setVisible(true);
-//    chart->legend()->setAlignment(Qt::AlignBottom);
-//    ui->graphicsView->setChart(chart);
-//    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-
 }
 
 StatisticWindow::~StatisticWindow()
@@ -82,53 +47,170 @@ StatsProp::TypeSearch StatisticWindow::type() const
 void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType lineType)
 {
     try {
-        QLineSeries *series;
-        if(lineType == StatsProp::Line)
-            series = new QLineSeries();
-        else
-            series = new QSplineSeries();
-
         if(type == StatsProp::Profit)
         {
+            ui->graphicsView->setRubberBand(QChartView::HorizontalRubberBand);
+            ui->comboBox_typeOfCloth->hide();
+
+            QLineSeries *series;
+            if(lineType == StatsProp::Line)
+                series = new QLineSeries();
+            else
+                series = new QSplineSeries();
             QDate from(ui->dateEdit_from->date());
             QDate to(ui->dateEdit_to->date());
 
             QList<QDate> datesList = DBConnection::orderDates(from, to);
-            QSet<QDate> datesListSet = QSet<QDate>::fromList(datesList);
-            datesList = datesListSet.values();
-            qSort(datesList.begin(), datesList.end());
+            QSet<QDate> datesSet = QSet<QDate>::fromList(datesList);//удаляет повторения в списке
+            datesList = datesSet.values();//возвращаем список на место
+            std::sort(datesList.begin(), datesList.end());
             QList<double> profitList = DBConnection::ordersProfit(datesList);
-            qDebug() << datesList << profitList;
             for(int i(0); i < datesList.length(); i++)
             {
                 QDateTime date(datesList[i]);
                 series->append(date.toMSecsSinceEpoch(), profitList[i]);
             }
             series->setPointsVisible(true);
-            series->setColor(Qt::blue);
 
             QChart *chart = new QChart();
             chart->addSeries(series);
             chart->legend()->hide();
-            chart->setTitle("Прибыль");
+            chart->setTitle("Прибыль от " + from.toString("dd MMM yyyy") + " до " + to.toString("dd MMM yyyy"));
             chart->setTheme(QChart::ChartThemeDark);
+            chart->setAnimationOptions(QChart::AllAnimations);
 
             QDateTimeAxis *axisX = new QDateTimeAxis;
             axisX->setTickCount(10);
             axisX->setFormat("dd MMM yyyy");
+
             chart->addAxis(axisX, Qt::AlignBottom);
             series->attachAxis(axisX);
 
             QValueAxis *axisY = new QValueAxis;
             axisY->setLabelFormat("%i");
             axisY->setTitleText("Гривен");
-            axisY->setRange(0, *std::max_element(profitList.begin(), profitList.end()) + 1000);
+            //axisY->setRange(0, *std::max_element(profitList.begin(), profitList.end()) + 1000);
 
             chart->addAxis(axisY, Qt::AlignLeft);
-            series->attachAxis(axisY);
-            chart->setAnimationOptions(QChart::AllAnimations);
+            series->attachAxis(axisY);;
             ui->graphicsView->setChart(chart);
         }
+        else if (type == StatsProp::TypeOfClothPopularity)
+        {
+            ui->graphicsView->setRubberBand(QChartView::HorizontalRubberBand);
+            if(ui->comboBox_typeOfCloth->isHidden())
+            {
+                ui->comboBox_typeOfCloth->show();
+                ui->comboBox_typeOfCloth->clear();
+                ui->comboBox_typeOfCloth->addItems(DBConnection::ToCNamesList());
+            }
+            else
+            {
+                QLineSeries *series;
+                if(lineType == StatsProp::Line)
+                    series = new QLineSeries();
+                else
+                    series = new QSplineSeries();
+
+                series->setPointsVisible(true);
+
+                QDate from(ui->dateEdit_from->date());
+                QDate to(ui->dateEdit_to->date());
+                QString name(ui->comboBox_typeOfCloth->currentText());
+
+                QList<QDate> datesList = DBConnection::ToCDates(from, to, name);
+                QSet<QDate> datesSet = QSet<QDate>::fromList(datesList);//удаляет повторения в списке
+                datesList = datesSet.values();//возвращаем список на место
+
+                std::sort(datesList.begin(), datesList.end());
+
+                QList<int> countList = DBConnection::ToCCounts(datesList, name);
+                qDebug() << countList << datesList;
+                for(int i(0); i < datesList.length(); i++)
+                {
+                    QDateTime date(datesList[i]);
+                    series->append(date.toMSecsSinceEpoch(), countList[i]);
+                }
+
+                QChart *chart = new QChart();
+                chart->addSeries(series);//1
+
+                chart->legend()->hide();
+                chart->setTitle("Популярность " + name + " от " + from.toString("dd MMM yyyy") + " до " + to.toString("dd MMM yyyy"));
+                chart->setTheme(QChart::ChartThemeDark);
+                chart->setAnimationOptions(QChart::AllAnimations);
+
+                QDateTimeAxis *axisX = new QDateTimeAxis;
+                axisX->setTickCount(10);
+                axisX->setFormat("dd MMM yyyy");
+
+                chart->addAxis(axisX, Qt::AlignBottom);//2
+                series->attachAxis(axisX);//3
+
+                QValueAxis *axisY = new QValueAxis;
+                axisY->setLabelFormat("%i");
+                axisY->setTitleText("Куплено раз");
+                //axisY->setRange(0, *std::max_element(countList.begin(), countList.end()) + 2);
+
+                chart->addAxis(axisY, Qt::AlignLeft);//2
+                series->attachAxis(axisY);//3
+                ui->graphicsView->setChart(chart);//4
+            }//else(ui->comboBox_typeOfCloth->isHidden())
+        }//else if (type == StatsProp::TypeOfClothPopularity)
+        else if (type == StatsProp::AllTypeOfClothPopularity)
+        {
+            ui->graphicsView->setRubberBand(QChartView::NoRubberBand);
+            if(!ui->comboBox_lineType->isHidden())
+            {
+                ui->comboBox_typeOfCloth->hide();
+                ui->comboBox_lineType->hide();
+            }
+            else
+            {
+                QDate from(ui->dateEdit_from->date());
+                QDate to(ui->dateEdit_to->date());
+
+                int yearCount = to.year() - from.year();
+
+                DonutBreakdownChart *donutBreakdown = new DonutBreakdownChart();
+                donutBreakdown->setAnimationOptions(QChart::AllAnimations);
+                donutBreakdown->setTitle("Популярность одежды с " + from.toString("yyyy MMM dd") + " до " + to.toString("yyyy MMM dd"));
+                donutBreakdown->legend()->setAlignment(Qt::AlignRight);
+                QStringList tocList = DBConnection::ToCNamesList();
+                int colorsCounter(0);
+                for(int names(0); names < tocList.length(); names++)
+                {
+                    QPieSeries *series = new QPieSeries();
+                    QDate startDate(from);
+                    for(int years(0); years < yearCount; years++)
+                    {
+                        QDate finishDate(startDate);
+                        if(to.year() - finishDate.year() >= 1)
+                            finishDate.setDate(finishDate.year() + 1, 1, 1);
+                        else
+                            finishDate = to;
+                        int count = DBConnection::ToCCount(startDate, finishDate, tocList[names]);
+                        if(count != 0)
+                            series->append(tocList[names] + " " + startDate.toString("yyyy MMM dd") + " - " + finishDate.toString("yyyy MMM dd"), count);
+                        startDate = finishDate;
+                    }//for years
+                    series->setName(tocList[names]);
+                    QColor color = Qt::red;
+                    int cv = colorsCounter % 4;
+                    if(cv == 0)
+                        color = QColor("#9AD9CC");
+                    else if(cv == 1)
+                        color = QColor("#D9D684");
+                    else if(cv == 2)
+                        color = QColor("#AF93DA");
+                    else if(cv == 3)
+                        color = QColor("#D99279");
+                    donutBreakdown->addBreakdownSeries(series, color);
+                    colorsCounter++;
+                }//for names
+                ui->graphicsView->setChart(donutBreakdown);
+            }
+        }//else if (type == StatsProp::AllTypeOfClothPopularity)
     } catch (const std::exception& e) {
         Log::write(e.what());
         QMessageBox::warning(this, "Ошибка", e.what());
@@ -144,4 +226,16 @@ void StatisticWindow::on_pushButton_update_clicked()
 void StatisticWindow::on_comboBox_typeSearch_activated(int index)
 {
     _type = ui->comboBox_typeSearch->itemData(index).value<StatsProp::TypeSearch>();
+    updateUI(_type);
+}
+
+void StatisticWindow::on_dateEdit_from_userDateChanged(const QDate &date)
+{
+    ui->dateEdit_to->setMinimumDate(date);
+}
+
+void StatisticWindow::on_comboBox_typeOfCloth_activated(const QString &/*arg1*/)
+{
+    StatsProp::LineType lineType = ui->comboBox_lineType->itemData(ui->comboBox_lineType->currentIndex()).value<StatsProp::LineType>();
+    updateUI(_type, lineType);
 }

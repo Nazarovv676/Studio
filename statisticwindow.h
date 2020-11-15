@@ -11,8 +11,8 @@ enum TypeSearch{
     MaterialHardwarePopularity = 4
 };
 enum LineType{
-    Smooth,
-    Line
+    Smooth = 1,
+    Line = 0
 };
 }
 
@@ -35,12 +35,16 @@ public:
     StatsProp::TypeSearch type() const;
 
 public slots:
-    void updateUI(StatsProp::TypeSearch type, StatsProp::LineType lineType);
+    void updateUI(StatsProp::TypeSearch type, StatsProp::LineType lineType = StatsProp::Line);
 
 private slots:
     void on_pushButton_update_clicked();
 
     void on_comboBox_typeSearch_activated(int index);
+
+    void on_dateEdit_from_userDateChanged(const QDate &date);
+
+    void on_comboBox_typeOfCloth_activated(const QString &arg1);
 
 private:
     Ui::StatisticWindow *ui;

@@ -16,6 +16,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    DonutBreakDownChart/donutbreakdownchart.cpp \
+    DonutBreakDownChart/mainslice.cpp \
     dbconnection.cpp \
     itemdelegate.cpp \
     itemdelegatecheckbox.cpp \
@@ -34,6 +36,8 @@ SOURCES += \
     statisticwindow.cpp
 
 HEADERS += \
+    DonutBreakDownChart/donutbreakdownchart.h \
+    DonutBreakDownChart/mainslice.h \
     dbconnection.h \
     itemdelegate.h \
     itemdelegatecheckbox.h \

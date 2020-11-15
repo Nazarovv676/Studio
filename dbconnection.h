@@ -32,17 +32,27 @@ public:
 
     static QSqlQuery qToCList();
     static QStringList ToCNamesList();
+    static void addTypeOfCloth(const QString &name, const QString &price, const QString &days);
+    static bool containsTypeOfCloth(const QString &name);
+    static QString typeOfClothByOrder(QString orderID);
+    static QList<QDate> ToCDates(QDate from, QDate to, QString name);
+    static QList<int> ToCCounts(QList<QDate> dates, QString name);
+    static int ToCCounts(QDate date, QString name);
+    static int ToCCount(QDate from, QDate to, QString name);
 
     static QSqlQuery qMaterialNameList();
     static QStringList materialList();
     static QString materialList(QString orderID);
     static QSqlTableModel *tmMaterialList(QString orderID);
+    static void addMaterial(const QString &name, const QString &price, const QString &quantity);
+    static bool containsMaterial(const QString &name);
 
     static QSqlQuery qHardwareNameList();
     static QStringList hardwareList();
     static QString hardwareList(QString orderID);
     static QSqlTableModel *tmHardwareList(QString orderID);
-
+    static void addHardware(const QString &name, const QString &price, const QString &quantity);
+    static bool containsHardware(const QString &name);
 
     static void addMaterialInOrder(const QString &order);
     static void addHardwareInOrder(const QString &order);
@@ -68,22 +78,12 @@ public:
     static QStringList masterIDList();
     static QStringList masterTelnumList();
 
-    static void addHardware(const QString &name, const QString &price, const QString &quantity);
-    static bool containsHardware(const QString &name);
-
-    static void addMaterial(const QString &name, const QString &price, const QString &quantity);
-    static bool containsMaterial(const QString &name);
-
-    static void addTypeOfCloth(const QString &name, const QString &price, const QString &days);
-    static bool containsTypeOfCloth(const QString &name);
-    static QString typeOfClothByOrder(QString orderID);
-
     static QString addOrder(const QString &custID, const QString &masterID, const QString &ToCName, const QStringList &materialName, const QStringList &materialQuant, const QStringList &hardName, const QStringList &hardQuant);
     static QString orderPrice(QString orderID);
     static double orderProfit(QString orderID);
-    static QList<double> orderProfit(QDate from, QDate to);
+    static QList<double> orderProfit(QDate from, QDate to);//каждого раздельно
     static QList<QDate> orderDates(QDate from, QDate to);
-    static QList<double> ordersProfit(QList<QDate> dates);
+    static QList<double> ordersProfit(QList<QDate> dates);//сумма за каждый день
     static double ordersProfit(QDate date);
 };
 

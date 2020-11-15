@@ -368,10 +368,56 @@ bool DBConnection::containsTypeOfCloth(const QString &name)
 
 QString DBConnection::typeOfClothByOrder(QString orderID)
 {
-    if(!query.exec("SELECT typeofcloth_name FROM studio.order WHERE id = '" + orderID + "'"))
+    if(!query.exec("SELECT typeofcloth_name FROM studio.order "
+                   "WHERE id = '" + orderID + "'"))
         throw std::runtime_error(query.lastError().text().toStdString());
     query.next();
     return query.value(0).toString();
+}
+
+QList<QDate> DBConnection::ToCDates(QDate from, QDate to, QString name)
+{
+    if(!query.exec("SELECT date FROM studio.order "
+                   "WHERE (date between CAST('" + from.toString("yyyy-MM-dd") + "' AS DATE) "
+                   "AND CAST('" + to.toString("yyyy-MM-dd") + "' AS DATE)) "
+                   "AND typeofcloth_name = '" + name + "'"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+
+    QList<QDate> list;
+    while(query.next())
+        list << query.value(0).toDate();
+
+    return list;
+}
+
+QList<int> DBConnection::ToCCounts(QList<QDate> dates, QString name)
+{
+    QList<int> list;
+    for(int i(0); i < dates.length(); i++)
+        list << ToCCounts(dates[i], name);
+    return list;
+}
+
+int DBConnection::ToCCounts(QDate date, QString name)
+{
+    if(!query.exec("SELECT count(typeofcloth_name) FROM studio.order "
+                   "WHERE date = (CAST('" + date.toString("yyyy-MM-dd") + "' AS DATE)) "
+                   "AND typeofcloth_name = '" + name + "' "
+                   "group by typeofcloth_name"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toInt();
+}
+
+int DBConnection::ToCCount(QDate from, QDate to, QString name)
+{
+    if(!query.exec("SELECT count(typeofcloth_name) FROM studio.order "
+                   "WHERE (date BETWEEN CAST('" + from.toString("yyyy-MM-dd") + "' AS DATE) and CAST('" + to.toString("yyyy-MM-dd") + "' AS DATE)) "
+                   "AND typeofcloth_name = '" + name + "' "
+                   "group by typeofcloth_name"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toInt();
 }
 
 void DBConnection::addMaterial(const QString &name, const QString &price, const QString &quantity)
