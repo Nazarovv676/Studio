@@ -7,17 +7,18 @@ Settings::Settings()
 
 void Settings::updatePalette()
 {
-    greyPalette.setColor(QPalette::Window, QColor(53, 53, 53));
-    greyPalette.setColor(QPalette::WindowText, Qt::white);
-    greyPalette.setColor(QPalette::Base, QColor(25, 25, 25));
-    greyPalette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
-    greyPalette.setColor(QPalette::Text, Qt::white);
-    greyPalette.setColor(QPalette::Button, QColor(53, 53, 53));
-    greyPalette.setColor(QPalette::ButtonText, Qt::white);
-    greyPalette.setColor(QPalette::BrightText, Qt::red);
-    greyPalette.setColor(QPalette::Link, QColor(42, 130, 218));
-    greyPalette.setColor(QPalette::Highlight, QColor("#00d5ff"));
-    greyPalette.setColor(QPalette::HighlightedText, Qt::black);
+//    greyPalette.setCurrentColorGroup(QPalette::Active);
+    greyPalette.setColor(QPalette::Active, QPalette::Window, QColor(53, 53, 53));
+    greyPalette.setColor(QPalette::Active, QPalette::WindowText, Qt::white);
+    greyPalette.setColor(QPalette::Active, QPalette::Base, QColor(25, 25, 25));
+    greyPalette.setColor(QPalette::Active, QPalette::AlternateBase, QColor(53, 53, 53));
+    greyPalette.setColor(QPalette::Active, QPalette::Text, Qt::white);
+    greyPalette.setColor(QPalette::Active, QPalette::Button, QColor(53, 53, 53));
+    greyPalette.setColor(QPalette::Active, QPalette::ButtonText, Qt::white);
+    greyPalette.setColor(QPalette::Active, QPalette::BrightText, Qt::red);
+    greyPalette.setColor(QPalette::Active, QPalette::Link, QColor(42, 130, 218));
+    greyPalette.setColor(QPalette::Active, QPalette::Highlight, QColor("#00d5ff"));
+    greyPalette.setColor(QPalette::Active, QPalette::HighlightedText, Qt::black);
 
     whitePalette.setColor(QPalette::Window, QColor(230, 232, 240));
     whitePalette.setColor(QPalette::WindowText, Qt::black);

@@ -80,6 +80,11 @@ public:
 
     static QString addOrder(const QString &custID, const QString &masterID, const QString &ToCName, const QStringList &materialName, const QStringList &materialQuant, const QStringList &hardName, const QStringList &hardQuant);
     static QString orderPrice(QString orderID);
+    static double orderProfit(QString orderID);
+    static QList<double> orderProfit(QDate from, QDate to);
+    static QList<QDate> orderDates(QDate from, QDate to);
+    static QList<double> ordersProfit(QList<QDate> dates);
+    static double ordersProfit(QDate date);
 };
 
 #endif // DBCONNECTION_H

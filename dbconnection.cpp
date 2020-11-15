@@ -432,4 +432,56 @@ QString DBConnection::orderPrice(QString orderID)
     return query.value(0).toString();
 }
 
+double DBConnection::orderProfit(QString orderID)
+{
+    if(!query.exec("CALL orderProfit('" + orderID + "')"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toDouble();
+}
+
+QList<double> DBConnection::orderProfit(QDate from, QDate to)
+{
+    if(!query.exec("SELECT id FROM studio.order WHERE date between CAST('" + from.toString("yyyy-MM-dd") + "' AS DATE) and CAST('" + to.toString("yyyy-MM-dd") + "' AS DATE)"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+
+    QStringList list;
+    while(query.next())
+        list << query.value(0).toString();
+
+    QList<double> priceList;
+    for(int i(0); i < list.length(); i++)
+        priceList << orderProfit(list[i]);
+
+    return priceList;
+}
+
+QList<QDate> DBConnection::orderDates(QDate from, QDate to)
+{
+    if(!query.exec("SELECT date FROM studio.order WHERE date between CAST('" + from.toString("yyyy-MM-dd") + "' AS DATE) and CAST('" + to.toString("yyyy-MM-dd") + "' AS DATE)"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+
+    QList<QDate> list;
+    while(query.next())
+        list << query.value(0).toDate();
+
+    return list;
+}
+
+QList<double> DBConnection::ordersProfit(QList<QDate> dates)
+{
+    QList<double> list;
+    for(int i(0); i < dates.length(); i++)
+        list << ordersProfit(dates[i]);
+    return list;
+}
+
+double DBConnection::ordersProfit(QDate date)
+{
+    if(!query.exec("CALL orderProfitDate(CAST('" + date.toString("yyyy-MM-dd") + "' AS DATE))"))
+        throw std::runtime_error(query.lastError().text().toStdString());
+    query.next();
+    return query.value(0).toDouble();
+}
+
 

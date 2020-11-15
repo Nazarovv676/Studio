@@ -77,7 +77,10 @@ MainWindow::~MainWindow()
     delete ui;
     delete settingsWindow;
     delete signupWindow;
+    delete statsWindow;
     delete tableModel;
+    delete tabModHar;
+    delete tabModMat;
     delete rxEmail;
     delete rxString45_ru;
     delete rxStringNum45_eng_ru;
@@ -429,7 +432,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ItemDelegateComboBox *itDgMaster = new ItemDelegateComboBox(masterIds, masterTelnums);
             ItemDelegateComboBox *itDgCust = new ItemDelegateComboBox(custIds, custTelnums);
             ItemDelegateCheckBox *itDgStat = new ItemDelegateCheckBox();
-            ItemDelegateDate *itDgDate = new ItemDelegateDate("dd.MM.yyyy");
+            //ItemDelegateDate *itDgDate = new ItemDelegateDate("dd.MM.yyyy");
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgEp);//дату и ID менять нельзя
             ui->tableView_search->setItemDelegateForColumn(1, itDgEp);
@@ -947,4 +950,10 @@ void MainWindow::on_radioButton_searchCompleted_clicked()
 void MainWindow::on_radioButton_searchUnfulfilled_clicked()
 {
     updateSearchTable();
+}
+
+void MainWindow::on_action_statistic_triggered()
+{
+    statsWindow = new StatisticWindow(StatsProp::Profit, this);
+    statsWindow->show();
 }

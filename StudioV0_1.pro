@@ -1,4 +1,4 @@
-QT       += core gui sql printsupport
+QT       += core gui sql printsupport charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,7 +30,8 @@ SOURCES += \
     orderwriter.cpp \
     settings.cpp \
     settingswindow.cpp \
-    signupwindow.cpp
+    signupwindow.cpp \
+    statisticwindow.cpp
 
 HEADERS += \
     dbconnection.h \
@@ -46,13 +47,15 @@ HEADERS += \
     orderwriter.h \
     settings.h \
     settingswindow.h \
-    signupwindow.h
+    signupwindow.h \
+    statisticwindow.h
 
 FORMS += \
     loginwindow.ui \
     mainwindow.ui \
     settingswindow.ui \
-    signupwindow.ui
+    signupwindow.ui \
+    statisticwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

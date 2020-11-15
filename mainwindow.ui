@@ -2108,6 +2108,7 @@
     <addaction name="action_settings"/>
     <addaction name="separator"/>
     <addaction name="action_addUser"/>
+    <addaction name="action_statistic"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -2211,6 +2212,15 @@
    </property>
    <property name="text">
     <string>Добавить пользователя</string>
+   </property>
+  </action>
+  <action name="action_statistic">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/image/analytics.png</normaloff>:/image/analytics.png</iconset>
+   </property>
+   <property name="text">
+    <string>Статистика</string>
    </property>
   </action>
  </widget>

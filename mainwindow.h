@@ -7,6 +7,7 @@
 
 #include "settingswindow.h"
 #include "signupwindow.h"
+#include "statisticwindow.h"
 
 #include "orderwriter.h"
 
@@ -106,12 +107,15 @@ private slots:
 
     void on_radioButton_searchUnfulfilled_clicked();
 
+    void on_action_statistic_triggered();
+
 private:
     void hideNonValidRowsSearchTable(int column, QString compareText, typeSearch = Text);
 
     Ui::MainWindow *ui;
     SettingsWindow *settingsWindow;///Окно для настроек
     signUpWindow *signupWindow;
+    StatisticWindow *statsWindow;
     QStringList materialNameList, materialQuantList, hardNameList, hardQuantList;//Списки названий и цен для заказа
     QSqlTableModel *tableModel;
     QSqlTableModel *tabModHar;
