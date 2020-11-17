@@ -1,8 +1,8 @@
 #include "signupwindow.h"
 #include "ui_signupwindow.h"
 
-#include "dbconnection.h"
-#include "log.h"
+#include "Data/dbconnection.h"
+#include "Data/log.h"
 
 #include <QMessageBox>
 

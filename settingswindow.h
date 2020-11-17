@@ -4,9 +4,9 @@
 #include <QDialog>
 #include <QMainWindow>
 
-#include "settings.h"
-#include "log.h"
-#include "dbconnection.h"
+#include "Data/settings.h"
+#include "Data/log.h"
+#include "Data/dbconnection.h"
 
 namespace Ui {
 class SettingsWindow;

@@ -1,7 +1,7 @@
 #include "loginwindow.h"
-#include "dbconnection.h"
-#include "log.h"
-#include "settings.h"
+#include "Data/dbconnection.h"
+#include "Data/log.h"
+#include "Data/settings.h"
 
 #include <QApplication>
 #include <QStyleFactory>

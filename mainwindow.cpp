@@ -1,11 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "itemdelegate.h"
-#include "itemdelegatecombobox.h"
-#include "itemdelegatecheckbox.h"
-#include "itemdelegatespinbox.h"
-#include "itemdelegatedoublespinbox.h"
-#include "itemdelegatedate.h"
+#include "ItemDelegate/itemdelegate.h"
+#include "ItemDelegate/itemdelegatecombobox.h"
+#include "ItemDelegate/itemdelegatecheckbox.h"
+#include "ItemDelegate/itemdelegatespinbox.h"
+#include "ItemDelegate/itemdelegatedoublespinbox.h"
+#include "ItemDelegate/itemdelegatedate.h"
 
 #include <QDebug>
 #include <QMessageBox>

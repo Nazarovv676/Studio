@@ -1,15 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "dbconnection.h"
-#include "log.h"
-#include "settings.h"
+#include "Data/dbconnection.h"
+#include "Data/log.h"
+#include "Data/settings.h"
 
 #include "settingswindow.h"
 #include "signupwindow.h"
 #include "statisticwindow.h"
 
-#include "orderwriter.h"
+#include "Data/orderwriter.h"
 
 #include <QMainWindow>
 #include <QCloseEvent>

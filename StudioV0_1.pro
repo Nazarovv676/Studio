@@ -16,40 +16,40 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Data/dbconnection.cpp \
+    Data/log.cpp \
+    Data/orderwriter.cpp \
+    Data/settings.cpp \
     DonutBreakDownChart/donutbreakdownchart.cpp \
     DonutBreakDownChart/mainslice.cpp \
-    dbconnection.cpp \
-    itemdelegate.cpp \
-    itemdelegatecheckbox.cpp \
-    itemdelegatecombobox.cpp \
-    itemdelegatedate.cpp \
-    itemdelegatedoublespinbox.cpp \
-    itemdelegatespinbox.cpp \
-    log.cpp \
+    ItemDelegate/itemdelegate.cpp \
+    ItemDelegate/itemdelegatecheckbox.cpp \
+    ItemDelegate/itemdelegatecombobox.cpp \
+    ItemDelegate/itemdelegatedate.cpp \
+    ItemDelegate/itemdelegatedoublespinbox.cpp \
+    ItemDelegate/itemdelegatespinbox.cpp \
     main.cpp \
     loginwindow.cpp \
     mainwindow.cpp \
-    orderwriter.cpp \
-    settings.cpp \
     settingswindow.cpp \
     signupwindow.cpp \
     statisticwindow.cpp
 
 HEADERS += \
+    Data/dbconnection.h \
+    Data/log.h \
+    Data/orderwriter.h \
+    Data/settings.h \
     DonutBreakDownChart/donutbreakdownchart.h \
     DonutBreakDownChart/mainslice.h \
-    dbconnection.h \
-    itemdelegate.h \
-    itemdelegatecheckbox.h \
-    itemdelegatecombobox.h \
-    itemdelegatedate.h \
-    itemdelegatedoublespinbox.h \
-    itemdelegatespinbox.h \
-    log.h \
+    ItemDelegate/itemdelegate.h \
+    ItemDelegate/itemdelegatecheckbox.h \
+    ItemDelegate/itemdelegatecombobox.h \
+    ItemDelegate/itemdelegatedate.h \
+    ItemDelegate/itemdelegatedoublespinbox.h \
+    ItemDelegate/itemdelegatespinbox.h \
     loginwindow.h \
     mainwindow.h \
-    orderwriter.h \
-    settings.h \
     settingswindow.h \
     signupwindow.h \
     statisticwindow.h

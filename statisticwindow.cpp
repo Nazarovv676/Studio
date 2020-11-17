@@ -1,8 +1,8 @@
 #include "statisticwindow.h"
 #include "ui_statisticwindow.h"
 
-#include "dbconnection.h"
-#include "log.h"
+#include "Data/dbconnection.h"
+#include "Data/log.h"
 #include "DonutBreakDownChart/donutbreakdownchart.h"
 
 #include <QDebug>

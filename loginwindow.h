@@ -1,9 +1,9 @@
 #ifndef LOGINWINDOW_H
 #define LOGINWINDOW_H
 
-#include "settings.h"
-#include "log.h"
-#include "dbconnection.h"
+#include "Data/settings.h"
+#include "Data/log.h"
+#include "Data/dbconnection.h"
 
 #include "mainwindow.h"
 #include "settingswindow.h"
