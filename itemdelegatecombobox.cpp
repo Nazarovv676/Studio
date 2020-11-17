@@ -25,7 +25,8 @@ void ItemDelegateComboBox::setModelData(QWidget *editor, QAbstractItemModel *mod
 {
     QComboBox *combobox = static_cast<QComboBox*>(editor);
     QString data = combobox->currentText();
-    model->setData(index, _indexList.operator[](_shownList.indexOf(data)));
+    model->setData(index, _indexList.operator[](_shownList.indexOf(data)), Qt::EditRole);
+    model->setData(index, data, Qt::DisplayRole);
 }
 
 

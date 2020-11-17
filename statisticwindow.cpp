@@ -28,7 +28,7 @@ StatisticWindow::StatisticWindow(StatsProp::TypeSearch type, QWidget *parent) :
     ui->comboBox_typeSearch->setCurrentIndex(currIndex);
 
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-    ui->graphicsView->setRubberBand(QChartView::HorizontalRubberBand);
+    //ui->graphicsView->setRubberBand(QChartView::RectangleRubberBand);
     ui->dateEdit_from->setDate(QDate::currentDate());
 
     updateUI(_type, StatsProp::Line);
@@ -49,7 +49,7 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
     try {
         if(type == StatsProp::Profit)
         {
-            ui->graphicsView->setRubberBand(QChartView::HorizontalRubberBand);
+            ui->graphicsView->setRubberBand(QChartView::RectangleRubberBand);
             ui->comboBox_typeOfCloth->hide();
 
             QLineSeries *series;
@@ -76,7 +76,7 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
             chart->addSeries(series);
             chart->legend()->hide();
             chart->setTitle("Прибыль от " + from.toString("dd MMM yyyy") + " до " + to.toString("dd MMM yyyy"));
-            chart->setTheme(QChart::ChartThemeDark);
+            //chart->setTheme(QChart::ChartThemeDark);
             chart->setAnimationOptions(QChart::AllAnimations);
 
             QDateTimeAxis *axisX = new QDateTimeAxis;
@@ -97,7 +97,7 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
         }
         else if (type == StatsProp::TypeOfClothPopularity)
         {
-            ui->graphicsView->setRubberBand(QChartView::HorizontalRubberBand);
+            ui->graphicsView->setRubberBand(QChartView::RectangleRubberBand);
             if(ui->comboBox_typeOfCloth->isHidden())
             {
                 ui->comboBox_typeOfCloth->show();
@@ -137,7 +137,7 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
 
                 chart->legend()->hide();
                 chart->setTitle("Популярность " + name + " от " + from.toString("dd MMM yyyy") + " до " + to.toString("dd MMM yyyy"));
-                chart->setTheme(QChart::ChartThemeDark);
+                //chart->setTheme(QChart::ChartThemeDark);
                 chart->setAnimationOptions(QChart::AllAnimations);
 
                 QDateTimeAxis *axisX = new QDateTimeAxis;
@@ -176,8 +176,10 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
                 donutBreakdown->setAnimationOptions(QChart::AllAnimations);
                 donutBreakdown->setTitle("Популярность одежды с " + from.toString("yyyy MMM dd") + " до " + to.toString("yyyy MMM dd"));
                 donutBreakdown->legend()->setAlignment(Qt::AlignRight);
+
                 QStringList tocList = DBConnection::ToCNamesList();
                 int colorsCounter(0);
+                QSet<QString> tocListInLegend;
                 for(int names(0); names < tocList.length(); names++)
                 {
                     QPieSeries *series = new QPieSeries();
@@ -191,7 +193,10 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
                             finishDate = to;
                         int count = DBConnection::ToCCount(startDate, finishDate, tocList[names]);
                         if(count != 0)
+                        {
                             series->append(tocList[names] + " " + startDate.toString("yyyy MMM dd") + " - " + finishDate.toString("yyyy MMM dd"), count);
+                            tocListInLegend << tocList[names];
+                        }
                         startDate = finishDate;
                     }//for years
                     series->setName(tocList[names]);
