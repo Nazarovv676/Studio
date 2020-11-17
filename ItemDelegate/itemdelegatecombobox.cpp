@@ -10,7 +10,9 @@ ItemDelegateComboBox::ItemDelegateComboBox(QStringList indexList, QStringList sh
 QWidget *ItemDelegateComboBox::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
 {
     QComboBox *editor = new QComboBox(parent);
-    editor->addItems(_shownList);
+    int i(0);
+    for(QString itemName : _shownList)
+        editor->addItem(itemName, _indexList[i++]);
     return editor;
 }
 
@@ -24,9 +26,8 @@ void ItemDelegateComboBox::setEditorData(QWidget *editor, const QModelIndex &ind
 void ItemDelegateComboBox::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     QComboBox *combobox = static_cast<QComboBox*>(editor);
-    QString data = combobox->currentText();
-    model->setData(index, _indexList.operator[](_shownList.indexOf(data)), Qt::EditRole);
-    model->setData(index, data, Qt::DisplayRole);
+    QVariant data = combobox->currentData();
+    model->setData(index, data);
 }
 
 
