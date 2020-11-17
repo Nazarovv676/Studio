@@ -75,8 +75,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    settingsWindow->close();
     delete settingsWindow;
+    signupWindow->close();
     delete signupWindow;
+    statsWindow->close();
     delete statsWindow;
     delete tableModel;
     delete tabModHar;
@@ -954,6 +957,6 @@ void MainWindow::on_radioButton_searchUnfulfilled_clicked()
 
 void MainWindow::on_action_statistic_triggered()
 {
-    statsWindow = new StatisticWindow(StatsProp::Profit, this);
+    statsWindow = new StatisticWindow(StatsProp::Profit);
     statsWindow->show();
 }

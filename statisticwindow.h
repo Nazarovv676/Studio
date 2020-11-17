@@ -3,14 +3,18 @@
 
 #include <QMainWindow>
 
-namespace StatsProp {
-enum TypeSearch{
+namespace StatsProp
+{
+enum TypeSearch
+{
     Profit = 1,
     AllTypeOfClothPopularity = 2,
     TypeOfClothPopularity = 3,
     MaterialHardwarePopularity = 4
 };
-enum LineType{
+
+enum LineType
+{
     Smooth = 1,
     Line = 0
 };
