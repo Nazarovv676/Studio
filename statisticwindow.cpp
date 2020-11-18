@@ -19,7 +19,7 @@ StatisticWindow::StatisticWindow(StatsProp::TypeSearch type, QWidget *parent) :
     ui->comboBox_typeSearch->addItem("Прибыль за промежуток времени", StatsProp::Profit);//добавляем возможные поиски и статистики
     ui->comboBox_typeSearch->addItem("Популярность определенного типа одежды", StatsProp::TypeOfClothPopularity);
     ui->comboBox_typeSearch->addItem("Популярность всех видов одежды", StatsProp::AllTypeOfClothPopularity);
-    ui->comboBox_typeSearch->addItem("Популярность использования материалов или фурнитуры в заказах", StatsProp::MaterialHardwarePopularity);
+//    ui->comboBox_typeSearch->addItem("Популярность использования материалов или фурнитуры в заказах", StatsProp::MaterialHardwarePopularity);
 
     ui->comboBox_lineType->addItem("Не сглаженный график", StatsProp::Line);
     ui->comboBox_lineType->addItem("Сглаженный график", StatsProp::Smooth);
@@ -87,6 +87,7 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
             series->attachAxis(axisX);
 
             QValueAxis *axisY = new QValueAxis;
+            axisY->setTickCount(10);
             axisY->setLabelFormat("%i");
             axisY->setTitleText("Гривен");
             chart->addAxis(axisY, Qt::AlignLeft);
@@ -124,8 +125,6 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
 
                 QList<int> countList = DBConnection::ToCCounts(datesList, name);
 
-                qDebug() << datesList << countList;
-
                 for(int i(0); i < datesList.length(); i++)
                 {
                     QDateTime date(datesList[i]);
@@ -145,6 +144,7 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
                 series->attachAxis(axisX);//3
 
                 QValueAxis *axisY = new QValueAxis;
+                axisY->setTickCount(10);
                 axisY->setLabelFormat("%i");
                 axisY->setTitleText("Куплено раз");
                 chart->addAxis(axisY, Qt::AlignLeft);//2

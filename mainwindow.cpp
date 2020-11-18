@@ -844,7 +844,7 @@ void MainWindow::on_action_addUser_triggered()
 void MainWindow::on_pushButton_searchDelete_clicked()
 {
     try {
-        QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Выход", "Вы уверены, что хотите удалить?", QMessageBox::No | QMessageBox::Yes);
+        QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Выход", "Вы уверены, что хотите удалить " + ui->tableView_search->model()->data(ui->tableView_search->model()->index(ui->tableView_search->currentIndex().row(), 0)).toString() + "?", QMessageBox::No | QMessageBox::Yes);
         if (resBtn == QMessageBox::Yes)
         {
             ui->tableView_search->model()->removeRow(ui->tableView_search->currentIndex().row());

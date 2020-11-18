@@ -7,6 +7,7 @@
 
 class Log
 {
+private:
     static QFile file;
 public:
     static void open();

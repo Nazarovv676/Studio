@@ -11,5 +11,6 @@
         <file>image/search.png</file>
         <file>image/upload.png</file>
         <file>image/analytics.png</file>
+        <file>image/shirt.ico</file>
     </qresource>
 </RCC>
