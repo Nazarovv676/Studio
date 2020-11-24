@@ -1955,7 +1955,7 @@
                    <bool>false</bool>
                   </property>
                   <property name="selectionMode">
-                   <enum>QAbstractItemView::SingleSelection</enum>
+                   <enum>QAbstractItemView::ExtendedSelection</enum>
                   </property>
                   <property name="textElideMode">
                    <enum>Qt::ElideLeft</enum>
@@ -2109,36 +2109,43 @@
     <addaction name="separator"/>
     <addaction name="action_addUser"/>
     <addaction name="action_statistic"/>
+    <addaction name="action_popularity"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
      <string>Клиент</string>
     </property>
     <addaction name="action_addCustomer"/>
+    <addaction name="action_searchCust"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
      <string>Заказ</string>
     </property>
     <addaction name="action_addOrder"/>
+    <addaction name="action_searchOrder"/>
    </widget>
    <widget class="QMenu" name="menu_4">
     <property name="title">
      <string>Материалы и фурнитура</string>
     </property>
     <addaction name="action_addMatHar"/>
+    <addaction name="action_searchMaterial"/>
+    <addaction name="action_searchHardware"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
      <string>Одежда</string>
     </property>
     <addaction name="action_addToC"/>
+    <addaction name="action_searchtoc"/>
    </widget>
    <widget class="QMenu" name="menu_6">
     <property name="title">
      <string>Мастер</string>
     </property>
     <addaction name="action_addMaster"/>
+    <addaction name="action_searchMaster"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -2221,6 +2228,41 @@
    </property>
    <property name="text">
     <string>Статистика</string>
+   </property>
+  </action>
+  <action name="action_popularity">
+   <property name="text">
+    <string>Популярность товаров</string>
+   </property>
+  </action>
+  <action name="action_searchCust">
+   <property name="text">
+    <string>Поиск клиентов</string>
+   </property>
+  </action>
+  <action name="action_searchOrder">
+   <property name="text">
+    <string>Поиск заказов</string>
+   </property>
+  </action>
+  <action name="action_searchMaterial">
+   <property name="text">
+    <string>Искать материалы</string>
+   </property>
+  </action>
+  <action name="action_searchHardware">
+   <property name="text">
+    <string>Искать фурнитуру</string>
+   </property>
+  </action>
+  <action name="action_searchtoc">
+   <property name="text">
+    <string>Поиск вариантов одежды</string>
+   </property>
+  </action>
+  <action name="action_searchMaster">
+   <property name="text">
+    <string>Поиск мастеров</string>
    </property>
   </action>
  </widget>

@@ -199,7 +199,7 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
                     series->setName(tocList[names]);
 
                     QColor color = Qt::red;
-                    int cv = colorsCounter % 4;
+                    int cv = colorsCounter % 10;
 
                     if(cv == 0)
                         color = QColor("#9AD9CC");
@@ -209,6 +209,18 @@ void StatisticWindow::updateUI(StatsProp::TypeSearch type, StatsProp::LineType l
                         color = QColor("#AF93DA");
                     else if(cv == 3)
                         color = QColor("#D99279");
+                    else if(cv == 4)
+                        color = QColor("#FF4E4E");
+                    else if(cv == 5)
+                        color = QColor("#7914DB");
+                    else if(cv == 6)
+                        color = QColor("#228EF2");
+                    else if(cv == 7)
+                        color = QColor("#14DB6C");
+                    else if(cv == 8)
+                        color = QColor("#CEFF17");
+                    else if(cv == 9)
+                        color = QColor("#FF9D58");
 
                     donutBreakdown->addBreakdownSeries(series, color);
 

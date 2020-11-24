@@ -10,13 +10,18 @@
 #include <QDebug>
 #include <QMessageBox>
 
-#define MESSAGETIMEOUT 3000
+constexpr auto MESSAGETIMEOUT = 3000;
+constexpr auto MINSPINBOXVALUE = -999999999;
+constexpr auto MAXSPINBOXVALUE = 999999999;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle(windowTitle() + " - " + DBConnection::userName);
+    tableModel = new QSqlTableModel(this, DBConnection::database);//задаем базу и выделяем память для модели(для выгрузки информации в таблицу)
+    tableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
     updateUI();//применяем настройки из файла к интерфейсу
     //убираем пока не нужные виждеты в поиске
     ui->label_search1->setText("Выберите имя таблицы еще раз для обновления информации");
@@ -369,6 +374,8 @@ void MainWindow::on_pushButton_addOrder_clicked()
             hardQuantList.clear();
 
             QMessageBox::information(this, "Успех!", "Заказ добавлен в базу! Номер: " + orderID);
+            ui->listWidget_addOrderHardList->clear();
+            ui->listWidget_addOrderMaterialList->clear();
             order.write(orderID);
         }
     } catch (const std::exception& e) {
@@ -380,9 +387,6 @@ void MainWindow::on_pushButton_addOrder_clicked()
 void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
 {
     try {
-        //delete tableModel;//удаляем все данные про таблицу в принципе
-        tableModel = new QSqlTableModel(this, DBConnection::database);//задаем базу и выделяем память для модели(для выгрузки информации в таблицу)
-        tableModel->setEditStrategy(QSqlTableModel::OnFieldChange);
 
         if(tableName == "Заказ")
         {
@@ -635,7 +639,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->pushButton_searchExport->hide();
 
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
-            ItemDelegateDoubleSpinBox *itDgDsb = new ItemDelegateDoubleSpinBox(ui->doubleSpinBox_addToCPrice->minimum(), ui->doubleSpinBox_addToCPrice->maximum());
+            ItemDelegateDoubleSpinBox *itDgDsb = new ItemDelegateDoubleSpinBox(MINSPINBOXVALUE, MAXSPINBOXVALUE);
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
             ui->tableView_search->setItemDelegateForColumn(1, itDgDsb);
@@ -680,7 +684,7 @@ void MainWindow::on_comboBox_searchTableName_activated(const QString &tableName)
             ui->pushButton_searchExport->hide();
 
             ItemDelegate *itDgName = new ItemDelegate(rxStringNum45_eng_ru);
-            ItemDelegateDoubleSpinBox *itDgDsb = new ItemDelegateDoubleSpinBox(ui->doubleSpinBox_addToCPrice->minimum(), ui->doubleSpinBox_addToCPrice->maximum());
+            ItemDelegateDoubleSpinBox *itDgDsb = new ItemDelegateDoubleSpinBox(MINSPINBOXVALUE, MAXSPINBOXVALUE);
 
             ui->tableView_search->setItemDelegateForColumn(0, itDgName);
             ui->tableView_search->setItemDelegateForColumn(1, itDgDsb);
@@ -844,10 +848,23 @@ void MainWindow::on_action_addUser_triggered()
 void MainWindow::on_pushButton_searchDelete_clicked()
 {
     try {
-        QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Выход", "Вы уверены, что хотите удалить " + ui->tableView_search->model()->data(ui->tableView_search->model()->index(ui->tableView_search->currentIndex().row(), 0)).toString() + "?", QMessageBox::No | QMessageBox::Yes);
+        QList<QModelIndex> selected = ui->tableView_search->selectionModel()->selection().indexes();
+        QSet<QString> numbersSet;
+        QString messNums;
+
+        for(QModelIndex index : selected)
+            numbersSet << tableModel->data(tableModel->index(index.row(), 0)).toString();
+
+        QStringList numbers = QStringList::fromSet(numbersSet);
+
+        for(QString num : numbers)
+            messNums += num + (num == numbers.last() ? nullptr : ", ");
+
+        QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Выход", "Вы уверены, что хотите удалить " + messNums + "?", QMessageBox::No | QMessageBox::Yes);
         if (resBtn == QMessageBox::Yes)
         {
-            ui->tableView_search->model()->removeRow(ui->tableView_search->currentIndex().row());
+            for(QModelIndex index : selected)
+                ui->tableView_search->model()->removeRow(index.row());
             tableModel->select();
         }
     } catch (const std::exception& e) {
@@ -932,11 +949,19 @@ void MainWindow::on_pushButton_searchAddHar_clicked()
 void MainWindow::on_pushButton_searchExport_clicked()
 {
     try {
-        QModelIndex curRowIDIndex = ui->tableView_search->model()->index(ui->tableView_search->currentIndex().row(), 0);
-        if(curRowIDIndex.row() != -1)
+        QList<QModelIndex> selected = ui->tableView_search->selectionModel()->selection().indexes();
+        QSet<QString> ids;
+
+        for(QModelIndex index : selected)
         {
-            QString data = ui->tableView_search->model()->data(curRowIDIndex).toString();
-            order.write(data);
+            QModelIndex currRow = tableModel->index(index.row(), 0);
+            QString data = ui->tableView_search->model()->data(currRow).toString();
+            ids << data;
+        }
+
+        for(QString id : ids)
+        {
+            order.write(id);
             QMessageBox::information(this, "Успех!", "Файл заказа находится по пути: " + order.lastPath());
         }
     } catch (const std::exception& e) {
@@ -959,4 +984,82 @@ void MainWindow::on_action_statistic_triggered()
 {
     statsWindow = new StatisticWindow(StatsProp::Profit);
     statsWindow->show();
+}
+
+void MainWindow::on_action_popularity_triggered()
+{
+    statsWindow = new StatisticWindow(StatsProp::AllTypeOfClothPopularity);
+    statsWindow->show();
+}
+
+void MainWindow::on_action_searchCust_triggered()
+{
+    for (int i(0); ui->tabWidget->count(); i++)
+        if(ui->tabWidget->tabText(i) == "Поиск")
+        {
+            ui->tabWidget->setCurrentIndex(i);
+            break;
+        }
+    ui->comboBox_searchTableName->setCurrentIndex(1);
+    on_comboBox_searchTableName_activated("Клиент");
+}
+
+void MainWindow::on_action_searchOrder_triggered()
+{
+    for (int i(0); ui->tabWidget->count(); i++)
+        if(ui->tabWidget->tabText(i) == "Поиск")
+        {
+            ui->tabWidget->setCurrentIndex(i);
+            break;
+        }
+    ui->comboBox_searchTableName->setCurrentIndex(0);
+    on_comboBox_searchTableName_activated("Заказ");
+}
+
+void MainWindow::on_action_searchMaterial_triggered()
+{
+    for (int i(0); ui->tabWidget->count(); i++)
+        if(ui->tabWidget->tabText(i) == "Поиск")
+        {
+            ui->tabWidget->setCurrentIndex(i);
+            break;
+        }
+    ui->comboBox_searchTableName->setCurrentIndex(5);
+    on_comboBox_searchTableName_activated("Материал");
+}
+
+void MainWindow::on_action_searchHardware_triggered()
+{
+    for (int i(0); ui->tabWidget->count(); i++)
+        if(ui->tabWidget->tabText(i) == "Поиск")
+        {
+            ui->tabWidget->setCurrentIndex(i);
+            break;
+        }
+    ui->comboBox_searchTableName->setCurrentIndex(4);
+    on_comboBox_searchTableName_activated("Фурнитура");
+}
+
+void MainWindow::on_action_searchtoc_triggered()
+{
+    for (int i(0); ui->tabWidget->count(); i++)
+        if(ui->tabWidget->tabText(i) == "Поиск")
+        {
+            ui->tabWidget->setCurrentIndex(i);
+            break;
+        }
+    ui->comboBox_searchTableName->setCurrentIndex(3);
+    on_comboBox_searchTableName_activated("Тип одежды");
+}
+
+void MainWindow::on_action_searchMaster_triggered()
+{
+    for (int i(0); ui->tabWidget->count(); i++)
+        if(ui->tabWidget->tabText(i) == "Поиск")
+        {
+            ui->tabWidget->setCurrentIndex(i);
+            break;
+        }
+    ui->comboBox_searchTableName->setCurrentIndex(2);
+    on_comboBox_searchTableName_activated("Мастер");
 }

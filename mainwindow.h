@@ -109,6 +109,20 @@ private slots:
 
     void on_action_statistic_triggered();
 
+    void on_action_popularity_triggered();
+
+    void on_action_searchCust_triggered();
+
+    void on_action_searchOrder_triggered();
+
+    void on_action_searchMaterial_triggered();
+
+    void on_action_searchHardware_triggered();
+
+    void on_action_searchtoc_triggered();
+
+    void on_action_searchMaster_triggered();
+
 private:
     void hideNonValidRowsSearchTable(int column, QString compareText, typeSearch = Text);
 
